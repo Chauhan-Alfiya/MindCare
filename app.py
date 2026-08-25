@@ -831,35 +831,22 @@ def login():
 # ===========================
 # STUDENT DASHBOARD
 # ===========================
-
 @app.route("/student_dashboard")
 def student_dashboard():
 
-    # ===========================
-    # LOGIN CHECK
-    # ===========================
-
+    # =========================== LOGIN CHECK ===========================
     if "user_id" not in session:
         return redirect(url_for("login"))
-
-    # ===========================
-    # ROLE CHECK
-    # ===========================
-
+    #=========================== ROLE CHECK # ===========================
     if session.get("role") != "STUDENT":
         return redirect(url_for("login"))
-
     user_id = session["user_id"]
 
     db = get_db_connection()
     cursor = db.cursor(dictionary=True)
 
     try:
-
-        # ===========================
-        # STUDENT PROFILE
-        # ===========================
-
+        # =========================== STUDENT PROFILE  ===========================
         cursor.execute("""
             SELECT
                 u.user_id,
@@ -872,85 +859,65 @@ def student_dashboard():
                 ON u.user_id = s.user_id
             WHERE u.user_id = %s
         """, (user_id,))
-
         student = cursor.fetchone()
 
         # ===========================
         # TOTAL ASSESSMENTS
         # ===========================
-
         cursor.execute("""
             SELECT COUNT(*) AS total
             FROM assessments
             WHERE user_id = %s
         """, (user_id,))
-
         total_assessments = cursor.fetchone()["total"]
 
         # ===========================
         # PENDING APPOINTMENTS
         # ===========================
-
         cursor.execute("""
             SELECT COUNT(*) AS total
             FROM appointments
             WHERE user_id = %s
             AND status = 'Pending'
         """, (user_id,))
-
         pending_appointments = cursor.fetchone()["total"]
 
         # ===========================
         # WELLNESS CHECK-INS
         # ===========================
-
         cursor.execute("""
             SELECT COUNT(*) AS total
             FROM wellness_tracker
             WHERE user_id = %s
         """, (user_id,))
-
         wellness_checkins = cursor.fetchone()["total"]
 
     except mysql.connector.Error as err:
 
         print("Student Dashboard Database Error:", err)
-
         flash("Unable to load student dashboard.")
-
         return redirect(url_for("logout"))
 
     finally:
-
         cursor.close()
         db.close()
-
     # ===========================
     # STUDENT PROFILE NOT FOUND
     # ===========================
-
     if not student:
-
         flash("Student profile not found.")
-
         return redirect(url_for("logout"))
-
     # ===========================
     # RENDER DASHBOARD
     # ===========================
-
     return render_template(
         "student_dashboard.html",
-
         student=student,
-
         total_assessments=total_assessments,
-
         pending_appointments=pending_appointments,
-
         wellness_checkins=wellness_checkins
     )
-   # ===========================
+# ===========================
 # ADMIN DASHBOARD
 # ===========================
 
@@ -960,371 +927,168 @@ def admin_dashboard():
     # ===========================
     # LOGIN CHECK
     # ===========================
-
     if "user_id" not in session:
         return redirect(url_for("login"))
-
 
     # ===========================
     # ADMIN ONLY
     # ===========================
-
     if session.get("role") != "ADMIN":
         return redirect(url_for("dashboard_redirect"))
-
-
 
     db = get_db_connection()
     cursor = db.cursor(dictionary=True)
 
-
     try:
-
-
         # ===========================
         # TOTAL STUDENTS
         # ===========================
-
         cursor.execute("""
             SELECT COUNT(*) AS total
-
             FROM users u
-
             INNER JOIN roles r
             ON u.role_id = r.role_id
-
             WHERE r.role = 'STUDENT'
-
             AND u.is_deleted = FALSE
         """)
-
         total_students = cursor.fetchone()["total"]
-
-
 
         # ===========================
         # TOTAL COUNSELLORS
         # ===========================
-
         cursor.execute("""
             SELECT COUNT(*) AS total
-
             FROM users u
-
             INNER JOIN roles r
             ON u.role_id = r.role_id
-
             WHERE r.role = 'COUNSELLOR'
-
             AND u.is_deleted = FALSE
         """)
-
         total_counsellors = cursor.fetchone()["total"]
-
-
-
 
         # ===========================
         # TOTAL ASSESSMENTS
         # ===========================
-
         cursor.execute("""
             SELECT COUNT(*) AS total
-
             FROM assessments
         """)
-
         total_assessments = cursor.fetchone()["total"]
-
-
-
 
         # ===========================
         # TOTAL APPOINTMENTS
         # ===========================
-
         cursor.execute("""
             SELECT COUNT(*) AS total
-
             FROM appointments
         """)
-
         total_appointments = cursor.fetchone()["total"]
-
-
-
-
 
         # ===========================
         # RECENT STUDENTS
         # ===========================
-
         cursor.execute("""
             SELECT
-
                 u.user_id,
                 u.username,
                 u.email,
                 u.is_active,
                 u.created_at
-
-
             FROM users u
-
-
             INNER JOIN roles r
-
             ON u.role_id = r.role_id
-
-
-
             WHERE r.role = 'STUDENT'
-
-
             AND u.is_deleted = FALSE
-
-
-
             ORDER BY u.created_at DESC
-
-
-
             LIMIT 5
-
         """)
-
-
         students = cursor.fetchall()
-
-
-
-
-
 
         # ===========================
         # RECENT COUNSELLORS
         # ===========================
-
         cursor.execute("""
             SELECT
-
                 u.user_id,
                 u.username,
                 u.email,
                 u.is_active,
                 u.created_at
-
-
             FROM users u
-
-
             INNER JOIN roles r
-
             ON u.role_id = r.role_id
-
-
-
             WHERE r.role = 'COUNSELLOR'
-
-
             AND u.is_deleted = FALSE
-
-
-
             ORDER BY u.created_at DESC
-
-
-
             LIMIT 5
-
         """)
-
-
         counsellors = cursor.fetchall()
-
-
-
-
-
 
         # ===========================
         # RECENT APPOINTMENTS
         # ===========================
-
         cursor.execute("""
             SELECT
-
-
                 a.appointment_id,
-
-
                 s.username AS student_name,
-
-
                 c.username AS counsellor_name,
-
-
                 a.appointment_date,
-
-
                 a.appointment_time,
-
-
                 a.status
-
-
-
             FROM appointments a
-
-
-
             INNER JOIN users s
-
             ON a.user_id = s.user_id
-
-
-
-
             INNER JOIN users c
-
             ON a.counsellor_id = c.user_id
-
-
-
-
             ORDER BY a.created_at DESC
-
-
-
-
             LIMIT 5
-
         """)
-
-
         appointments = cursor.fetchall()
-
-
-
-
-
 
         # ===========================
         # RECENT ASSESSMENTS
         # ===========================
-
         cursor.execute("""
             SELECT
-
-
                 a.assessment_id,
-
-
                 u.username,
-
-
                 a.assessment_type,
-
-
                 a.score,
-
-
                 a.risk_level,
-
-
                 a.created_at
-
-
-
             FROM assessments a
-
-
-
             INNER JOIN users u
-
             ON a.user_id = u.user_id
-
-
-
-
             ORDER BY a.created_at DESC
-
-
-
-
             LIMIT 5
-
         """)
-
-
-
         assessments = cursor.fetchall()
-
-
-
-
 
     except mysql.connector.Error as err:
 
-
-        print(
-            "Admin Dashboard Error:",
-            err
-        )
-
-
-        flash(
-            "Unable to load admin dashboard."
-        )
-
-
+        print("Admin Dashboard Error:",err)
+        flash("Unable to load admin dashboard.")
         return redirect(
             url_for("logout")
         )
 
-
-
     finally:
 
-
         cursor.close()
-
         db.close()
 
-
-
-
-
     return render_template(
-
         "admin_dashboard.html",
-
-
         total_students=total_students,
-
-
         total_counsellors=total_counsellors,
-
-
         total_assessments=total_assessments,
-
-
         total_appointments=total_appointments,
-
-
         students=students,
-
-
         counsellors=counsellors,
-
-
         appointments=appointments,
-
-
         assessments=assessments
-
     )
-    # ===========================
+# ===========================
 # COUNSELLOR DASHBOARD
 # ===========================
 
