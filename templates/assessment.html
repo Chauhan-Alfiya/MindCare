@@ -25,185 +25,103 @@
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
         rel="stylesheet">
 
-
     <style>
 
         body {
-
             background: #f0f4f8;
-
             font-family: "Poppins", sans-serif;
-
         }
-
 
         .assessment-container {
-
             max-width: 850px;
-
             margin: 50px auto;
-
         }
-
 
         .assessment-card {
-
             background: white;
-
             border-radius: 16px;
-
             box-shadow: 0 8px 30px rgba(0,0,0,0.08);
-
             overflow: hidden;
-
         }
-
 
         .assessment-header {
-
             background: #06232d;
-
             color: white;
-
             padding: 30px;
-
         }
-
 
         .assessment-header h2 {
-
             font-weight: 700;
-
         }
-
 
         .assessment-body {
-
             padding: 35px;
-
         }
-
 
         .question-card {
-
             background: #f8fafc;
-
             border: 1px solid #e2e8f0;
-
             border-radius: 12px;
-
             padding: 25px;
-
             margin-bottom: 25px;
-
         }
-
 
         .question-number {
-
             display: inline-flex;
-
             width: 35px;
-
             height: 35px;
-
             border-radius: 50%;
-
             background: #0e4a5c;
-
             color: white;
-
             align-items: center;
-
             justify-content: center;
-
             font-weight: 600;
-
             margin-right: 10px;
-
         }
-
 
         .question-text {
-
             color: #17324d;
-
             font-weight: 600;
-
             font-size: 16px;
-
         }
-
 
         .option {
-
             display: block;
-
             background: white;
-
             border: 1px solid #dbe3e8;
-
             border-radius: 9px;
-
             padding: 12px 15px;
-
             margin-top: 10px;
-
             cursor: pointer;
-
             transition: 0.2s;
-
         }
-
 
         .option:hover {
-
             background: #e8f0f3;
-
             border-color: #0e4a5c;
-
         }
-
 
         .option input {
-
             margin-right: 10px;
-
         }
-
 
         .submit-btn {
-
             background: #0e4a5c;
-
             border: none;
-
             padding: 12px 30px;
-
             border-radius: 9px;
-
             color: white;
-
             font-weight: 600;
-
         }
-
 
         .submit-btn:hover {
-
             background: #06232d;
-
             color: white;
-
         }
 
-
         .note {
-
             font-size: 13px;
-
             color: #64748b;
-
         }
 
     </style>
@@ -213,30 +131,22 @@
 
 <body>
 
-
 <div class="container assessment-container">
 
-
     <div class="assessment-card">
-
 
         <!-- HEADER -->
 
         <div class="assessment-header">
 
             <h2 class="mb-2">
-
                 <i class="bi bi-clipboard2-pulse me-2"></i>
-
                 MindCare Assessment
-
             </h2>
 
             <p class="mb-0">
-
                 Answer these 5 questions honestly to understand
                 your current emotional well-being.
-
             </p>
 
         </div>
@@ -245,7 +155,6 @@
         <!-- BODY -->
 
         <div class="assessment-body">
-
 
             <div class="alert alert-light border mb-4">
 
@@ -258,101 +167,49 @@
             </div>
 
 
-            <form method="POST"
-                  action="{{ url_for('assessment') }}">
+            <!-- IMPORTANT: POST TO ASSESSMENT -->
+
+            <form action="{{ url_for('assessment') }}" method="POST">
 
 
-                {% for question in questions %}
+{% for question in questions %}
 
+<div class="question-card">
 
-                <div class="question-card">
+    <div class="mb-3">
 
+        <span class="question-number">
+            {{ question["id"] }}
+        </span>
 
-                    <div class="mb-3">
+        <span class="question-text">
+            {{ question["question"] }}
+        </span>
 
+    </div>
 
-                        <span class="question-number">
+    {% for option in options %}
 
-                            {{ question.id }}
+    <label class="option">
 
-                        </span>
+        <input
+            type="radio"
+            name="q{{ question['id'] }}"
+            value="{{ option['value'] }}"
+            required>
 
+        {{ option["text"] }}
 
-                        <span class="question-text">
+    </label>
 
-                            {{ question.question }}
+    {% endfor %}
 
-                        </span>
+</div>
 
-
-                    </div>
-
-
-                    <!-- NEVER -->
-
-                    <label class="option">
-
-                        <input
-                            type="radio"
-                            name="q{{ question.id }}"
-                            value="0"
-                            required>
-
-                        Never
-
-                    </label>
-
-
-                    <!-- SOMETIMES -->
-
-                    <label class="option">
-
-                        <input
-                            type="radio"
-                            name="q{{ question.id }}"
-                            value="1">
-
-                        Sometimes
-
-                    </label>
-
-
-                    <!-- OFTEN -->
-
-                    <label class="option">
-
-                        <input
-                            type="radio"
-                            name="q{{ question.id }}"
-                            value="2">
-
-                        Often
-
-                    </label>
-
-
-                    <!-- ALWAYS -->
-
-                    <label class="option">
-
-                        <input
-                            type="radio"
-                            name="q{{ question.id }}"
-                            value="3">
-
-                        Always
-
-                    </label>
-
-
-                </div>
-
-
-                {% endfor %}
-
+{% endfor %}
+                <!-- SUBMIT -->
 
                 <div class="text-center mt-4">
-
 
                     <p class="note mb-3">
 
@@ -374,19 +231,16 @@
 
                     </button>
 
-
                 </div>
 
 
             </form>
-
 
         </div>
 
     </div>
 
 </div>
-
 
 </body>
 
