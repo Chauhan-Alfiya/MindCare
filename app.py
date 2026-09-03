@@ -3069,7 +3069,6 @@ def assessment():
 
             cursor.close()
             db.close()
-
         # ===========================
         # SHOW RESULT
         # ===========================
