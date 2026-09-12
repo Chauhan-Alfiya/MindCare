@@ -3091,7 +3091,7 @@ def assessment():
         questions=questions,
         options=options
     )
-        # ============================================================
+# ============================================================
 # COUNSELLOR -> STUDENT CHAT
 # ============================================================
 
@@ -3105,10 +3105,10 @@ def counsellor_chat_student(student_id):
     if "user_id" not in session:
         return redirect(url_for("login"))
 
-    counsellor_id = session["user_id"]
-
     if session.get("role") != "COUNSELLOR":
         return redirect(url_for("dashboard_redirect"))
+
+    counsellor_id = session["user_id"]
 
     db = get_db_connection()
     cursor = db.cursor(dictionary=True)
@@ -3153,34 +3153,6 @@ def counsellor_chat_student(student_id):
             )
 
         # ----------------------------------------------------
-        # CHECK CHAT EXISTS
-        # ----------------------------------------------------
-
-        cursor.execute("""
-            SELECT chat_id
-            FROM counsellor_chat
-            WHERE student_id = %s
-              AND counsellor_id = %s
-            LIMIT 1
-        """, (
-            student_id,
-            counsellor_id
-        ))
-
-        existing_chat = cursor.fetchone()
-
-        if not existing_chat:
-
-            flash(
-                "No chat found for this student.",
-                "info"
-            )
-
-            return redirect(
-                url_for("counsellor_dashboard")
-            )
-
-        # ----------------------------------------------------
         # SEND MESSAGE
         # ----------------------------------------------------
 
@@ -3204,6 +3176,10 @@ def counsellor_chat_student(student_id):
                         student_id=student_id
                     )
                 )
+
+            # -----------------------------------------------
+            # SAVE COUNSELLOR MESSAGE
+            # -----------------------------------------------
 
             cursor.execute("""
                 INSERT INTO counsellor_chat
@@ -3242,6 +3218,8 @@ def counsellor_chat_student(student_id):
         cursor.execute("""
             SELECT
                 chat_id,
+                student_id,
+                counsellor_id,
                 sender_role,
                 message,
                 created_at
@@ -3264,9 +3242,12 @@ def counsellor_chat_student(student_id):
 
         cursor.execute("""
             SELECT
+                assessment_id,
+                assessment_type,
                 score,
                 risk_level,
-                recommendation
+                recommendation,
+                created_at
             FROM assessments
             WHERE user_id = %s
             ORDER BY created_at DESC
@@ -3297,6 +3278,8 @@ def counsellor_chat_student(student_id):
 
             WHERE u.user_id = %s
               AND r.role = 'COUNSELLOR'
+              AND u.is_active = TRUE
+              AND u.is_deleted = FALSE
 
             LIMIT 1
         """, (counsellor_id,))
@@ -3332,6 +3315,231 @@ def counsellor_chat_student(student_id):
 
         return redirect(
             url_for("counsellor_dashboard")
+        )
+
+    finally:
+
+        cursor.close()
+        db.close()
+# ============================================================
+# STUDENT -> COUNSELLOR CHAT
+# ============================================================
+
+@app.route("/student/chat/<int:counsellor_id>", methods=["GET", "POST"])
+def student_counsellor_chat(counsellor_id):
+
+    # --------------------------------------------------------
+    # LOGIN CHECK
+    # --------------------------------------------------------
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    # --------------------------------------------------------
+    # STUDENT ONLY
+    # --------------------------------------------------------
+
+    if session.get("role") != "STUDENT":
+        return redirect(url_for("dashboard_redirect"))
+
+    student_id = session["user_id"]
+
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+
+    try:
+
+        # ----------------------------------------------------
+        # GET COUNSELLOR
+        # ----------------------------------------------------
+
+        cursor.execute("""
+            SELECT
+                u.user_id,
+                u.username,
+                u.email,
+                c.qualification,
+                c.specialization,
+                c.experience
+            FROM users u
+
+            INNER JOIN roles r
+                ON u.role_id = r.role_id
+
+            LEFT JOIN counsellor_details c
+                ON u.user_id = c.user_id
+
+            WHERE u.user_id = %s
+              AND r.role = 'COUNSELLOR'
+              AND u.is_active = TRUE
+              AND u.is_deleted = FALSE
+
+            LIMIT 1
+        """, (counsellor_id,))
+
+        counsellor = cursor.fetchone()
+
+        if not counsellor:
+
+            flash(
+                "Counsellor not found.",
+                "danger"
+            )
+
+            return redirect(
+                url_for("counsellors")
+            )
+
+        # ----------------------------------------------------
+        # SEND STUDENT MESSAGE
+        # ----------------------------------------------------
+
+        if request.method == "POST":
+
+            message = request.form.get(
+                "message",
+                ""
+            ).strip()
+
+            if not message:
+
+                flash(
+                    "Please enter a message.",
+                    "warning"
+                )
+
+                return redirect(
+                    url_for(
+                        "student_counsellor_chat",
+                        counsellor_id=counsellor_id
+                    )
+                )
+
+            cursor.execute("""
+                INSERT INTO counsellor_chat
+                (
+                    student_id,
+                    counsellor_id,
+                    sender_role,
+                    message
+                )
+                VALUES
+                (
+                    %s,
+                    %s,
+                    'STUDENT',
+                    %s
+                )
+            """, (
+                student_id,
+                counsellor_id,
+                message
+            ))
+
+            db.commit()
+
+            return redirect(
+                url_for(
+                    "student_counsellor_chat",
+                    counsellor_id=counsellor_id
+                )
+            )
+
+        # ----------------------------------------------------
+        # CHAT HISTORY
+        # ----------------------------------------------------
+
+        cursor.execute("""
+            SELECT
+                chat_id,
+                sender_role,
+                message,
+                created_at
+            FROM counsellor_chat
+            WHERE student_id = %s
+              AND counsellor_id = %s
+            ORDER BY
+                created_at ASC,
+                chat_id ASC
+        """, (
+            student_id,
+            counsellor_id
+        ))
+
+        messages = cursor.fetchall()
+
+        # ----------------------------------------------------
+        # STUDENT DETAILS
+        # ----------------------------------------------------
+
+        cursor.execute("""
+            SELECT
+                u.user_id,
+                u.username,
+                u.email,
+                s.class,
+                s.stream
+            FROM users u
+
+            LEFT JOIN student_details s
+                ON u.user_id = s.user_id
+
+            WHERE u.user_id = %s
+
+            LIMIT 1
+        """, (student_id,))
+
+        student = cursor.fetchone()
+
+        # ----------------------------------------------------
+        # STUDENT LATEST ASSESSMENT
+        # ----------------------------------------------------
+
+        cursor.execute("""
+            SELECT
+                assessment_id,
+                assessment_type,
+                score,
+                risk_level,
+                recommendation,
+                created_at
+            FROM assessments
+            WHERE user_id = %s
+            ORDER BY created_at DESC
+            LIMIT 1
+        """, (student_id,))
+
+        assessment = cursor.fetchone()
+
+        # ----------------------------------------------------
+        # OPEN CHAT
+        # ----------------------------------------------------
+
+        return render_template(
+            "counsellor_chat.html",
+            student=student,
+            counsellor=counsellor,
+            messages=messages,
+            role="STUDENT",
+            assessment=assessment
+        )
+
+    except mysql.connector.Error as err:
+
+        db.rollback()
+
+        print(
+            "Student Counsellor Chat Error:",
+            err
+        )
+
+        flash(
+            "Unable to load chat.",
+            "danger"
+        )
+
+        return redirect(
+            url_for("counsellors")
         )
 
     finally:
