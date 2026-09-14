@@ -235,36 +235,65 @@
 
         <!-- SEND MESSAGE -->
 
-        <div class="chat-footer">
+<div class="chat-footer">
 
-            <form method="POST">
+    <form method="POST">
 
-                <div class="input-group">
+        <div class="input-group">
 
-                    <input
-                        type="text"
-                        name="message"
-                        class="form-control chat-input"
-                        placeholder="Type your message..."
-                        maxlength="2000"
-                        required>
+            <input
+                type="text"
+                name="message"
+                class="form-control chat-input"
+                placeholder="Type your message..."
+                maxlength="2000"
+                required>
 
-                    <button
-                        type="submit"
-                        class="send-btn ms-2">
+            <button
+                type="submit"
+                class="send-btn ms-2">
 
-                        <i class="bi bi-send-fill me-1"></i>
-                        Send
+                <i class="bi bi-send-fill me-1"></i>
+                Send
 
-                    </button>
-
-                </div>
-
-            </form>
+            </button>
 
         </div>
 
+    </form>
+
+
+    <!-- COMPLETE COUNSELLING -->
+
+    <div class="text-center mt-3">
+
+        <form
+            method="POST"
+            action="{% if role == 'STUDENT' %}
+                {{ url_for('complete_counselling',
+                    student_id=session['user_id'],
+                    counsellor_id=counsellor.user_id) }}
+            {% else %}
+                {{ url_for('complete_counselling',
+                    student_id=student.user_id,
+                    counsellor_id=session['user_id']) }}
+            {% endif %}">
+
+            <button
+                type="submit"
+                class="btn btn-success">
+
+                <i class="bi bi-check-circle me-1"></i>
+                Complete Counselling
+
+            </button>
+
+        </form>
+
     </div>
+
+</div>
+</div>
 
 
     <div class="text-center mt-3">

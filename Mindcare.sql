@@ -195,4 +195,8 @@ CREATE TABLE counsellor_chat (
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+ALTER TABLE counsellor_chat
+ADD COLUMN chat_status ENUM('Active', 'Completed')
+DEFAULT 'Active';
+
 COMMIT;

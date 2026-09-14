@@ -3546,6 +3546,28 @@ def student_counsellor_chat(counsellor_id):
 
         cursor.close()
         db.close()
+@app.route("/complete-counselling/<int:student_id>/<int:counsellor_id>", methods=["POST"])
+def complete_counselling(student_id, counsellor_id):
+
+    db = get_db_connection()
+    cursor = db.cursor()
+
+    cursor.execute("""
+        UPDATE counsellor_chat
+        SET chat_status = 'Completed'
+        WHERE student_id = %s
+        AND counsellor_id = %s
+    """, (student_id, counsellor_id))
+
+    db.commit()
+
+    cursor.close()
+    db.close()
+
+    if session["role"] == "STUDENT":
+        return redirect(url_for("student_dashboard"))
+    else:
+        return redirect(url_for("counsellor_dashboard"))
 # ===========================
 # LOGOUT
 # ===========================

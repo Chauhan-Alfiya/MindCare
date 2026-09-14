@@ -486,25 +486,23 @@ Under monitoring
                         </div>
 
 
-                        <a
-                            href="{{ url_for(
-                                'counsellor_chat',
-                                counsellor_id=counsellor.user_id,
-                                student_id=student.user_id
-                            ) }}"
-                            class="btn w-100"
-                            style="
-                            background:#0e4a5c;
-                            color:white;
-                            border-radius:9px;
-                            ">
+                      <a
+    href="{{ url_for(
+        'counsellor_chat_student',
+        student_id=student.user_id
+    ) }}"
+    class="btn w-100"
+    style="
+    background:#0e4a5c;
+    color:white;
+    border-radius:9px;
+    ">
 
-                            <i class="bi bi-chat-left-text me-2"></i>
+    <i class="bi bi-chat-left-text me-2"></i>
 
-                            Open Chat
+    Open Chat
 
-                        </a>
-
+</a>
                     </div>
 
                 </div>
