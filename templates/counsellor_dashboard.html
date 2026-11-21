@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Counsellor Dashboard | MindCare</title>
+<!-- Bootstrap -->
+<link 
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+rel="stylesheet">
+<!-- Bootstrap Icons -->
+<link
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+rel="stylesheet">
+<style>
+:root{
+--mindcare-navy:#06232d;
+--mindcare-teal:#0e4a5c;
+--mindcare-mint:#14b8a6;
+--mindcare-bg:#f0f4f8;
+}
+body{
+background:var(--mindcare-bg);
+color:#1e293b;
+}
+/* HERO */
+.hero-bg{
+background:
+linear-gradient(
+135deg,
+var(--mindcare-navy),
+var(--mindcare-teal)
+);
+border-radius:0 0 30px 30px;
+}
+.dashboard-up{
+margin-top:-70px;
+}
+/* CARD */
+.dashboard-card{
+
+background:white;
+
+border:1px solid #e2e8f0;
+
+border-radius:18px;
+
+transition:.3s;
+
+}
+
+
+.dashboard-card:hover{
+
+transform:translateY(-5px);
+
+box-shadow:
+0 12px 30px rgba(6,35,45,.08);
+
+}
+
+
+
+/* ICON */
+
+.icon-box{
+
+width:55px;
+
+height:55px;
+
+border-radius:16px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+font-size:22px;
+
+}
+
+
+
+
+/* TABLE */
+
+.custom-table{
+
+background:white;
+
+border-radius:20px;
+
+overflow:hidden;
+
+border:1px solid #e2e8f0;
+
+}
+
+
+
+/* profile */
+
+.profile-box{
+
+background:white;
+
+border-radius:20px;
+
+border:1px solid #e2e8f0;
+
+}
+
+
+
+</style>
+
+
+</head>
+
+
+
+<body>
+
+
+
+
+
+{% include 'includes/navbar.html' %}
+
+<section id="dashboard">
+<div class="hero-bg text-white text-center">
+<div class="container py-5">
+<span
+class="badge rounded-pill px-3 py-2 mb-3"
+style="
+background:rgba(45,212,191,.15);
+color:#2dd4bf;
+">
+<i class="bi bi-shield-check me-1"></i>
+Counsellor Wellness Workspace
+</span>
+<h1 class="display-6 fw-bold mb-3">
+Welcome Back,
+<span style="color:#2dd4bf;">
+{{ counsellor.username }}
+</span>
+</h1>
+<p class="lead text-white-50 mx-auto"
+style="max-width:760px;">
+Monitor student mental health,
+manage counselling appointments,
+and provide confidential support
+through MindCare.
+</p>
+</div>
+</div>
+
+<!-- LIVE SUMMARY  -->
+
+<div class="container dashboard-up pb-5">
+<div class="row g-4">
+<!-- Pending -->
+<div class="col-md-3">
+<div class="dashboard-card p-4 h-100">
+<div class="icon-box mb-3"
+style="
+background:#fff4e8;
+color:#ea580c;
+">
+<i class="bi bi-hourglass-split"></i>
+
+</div>
+
+
+
+<small class="text-muted fw-semibold">
+
+PENDING REQUESTS
+
+</small>
+
+
+
+<h2 class="fw-bold mt-2"
+style="color:#0e4a5c;">
+
+
+{{ stats.pending }}
+
+
+</h2>
+
+
+
+<p class="small text-muted mb-0">
+
+Appointment requests
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- Today's Sessions -->
+
+
+<div class="col-md-3">
+
+
+<div class="dashboard-card p-4 h-100">
+
+
+<div class="icon-box mb-3"
+style="
+background:#e7f7f3;
+color:#0f766e;
+">
+
+
+<i class="bi bi-calendar-check-fill"></i>
+
+
+</div>
+
+
+
+<small class="text-muted fw-semibold">
+
+TODAY'S SESSIONS
+
+</small>
+
+
+
+<h2 class="fw-bold mt-2"
+style="color:#0e4a5c;">
+
+
+{{ stats.today_sessions }}
+
+
+</h2>
+
+
+
+
+<p class="small text-muted mb-0">
+
+Scheduled today
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- Completed -->
+
+
+<div class="col-md-3">
+
+
+<div class="dashboard-card p-4 h-100">
+
+
+<div class="icon-box mb-3"
+style="
+background:#edf3ff;
+color:#2563eb;
+">
+
+
+<i class="bi bi-check-circle-fill"></i>
+
+
+</div>
+
+
+
+
+<small class="text-muted fw-semibold">
+
+COMPLETED
+
+</small>
+
+
+
+<h2 class="fw-bold mt-2"
+style="color:#0e4a5c;">
+
+
+{{ stats.completed }}
+
+
+</h2>
+
+
+
+
+<p class="small text-muted mb-0">
+
+Completed sessions
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- Students -->
+
+
+<div class="col-md-3">
+
+
+<div class="dashboard-card p-4 h-100">
+
+
+<div class="icon-box mb-3"
+style="
+background:#f5f0ff;
+color:#7c3aed;
+">
+
+
+<i class="bi bi-people-fill"></i>
+
+
+</div>
+
+
+
+
+<small class="text-muted fw-semibold">
+
+STUDENTS
+
+</small>
+
+
+
+<h2 class="fw-bold mt-2"
+style="color:#0e4a5c;">
+
+
+{{ stats.students }}
+
+
+</h2>
+
+
+
+
+<p class="small text-muted mb-0">
+
+Under monitoring
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+</section>
+
+<!-- ===========================
+     STUDENT CHAT REQUESTS
+=========================== -->
+
+<section class="container pb-5">
+
+    <div class="dashboard-card p-4">
+
+        <div class="row align-items-center">
+
+            <div class="col-md-8">
+
+                <h4 class="fw-bold mb-2" style="color:#06232d;">
+                    <i class="bi bi-chat-heart me-2"
+                       style="color:#0e4a5c;"></i>
+                    Student Chat Requests
+                </h4>
+
+                <p class="text-muted mb-0">
+                    Manage student counselling requests and provide
+                    confidential support through one-to-one chat.
+                </p>
+
+            </div>
+
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+
+                <a href="{{ url_for('counsellor_chat_requests') }}"
+                   class="btn px-4 py-3"
+                   style="
+                   background:#0e4a5c;
+                   color:white;
+                   border-radius:10px;
+                   ">
+
+                    <i class="bi bi-chat-dots-fill me-2"></i>
+                    View Chat Requests
+
+                    <i class="bi bi-arrow-right ms-2"></i>
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <hr class="my-4">
+
+        <div class="row g-3">
+
+            <div class="col-md-6">
+
+                <div class="p-3 rounded-3"
+                     style="background:#fff4e8;">
+
+                    <h6 class="fw-bold mb-2"
+                        style="color:#ea580c;">
+
+                        <i class="bi bi-hourglass-split me-2"></i>
+                        Pending Requests
+
+                    </h6>
+
+                    <p class="small text-muted mb-0">
+                        View new requests from students and accept
+                        or reject them.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <div class="p-3 rounded-3"
+                     style="background:#e7f7f3;">
+
+                    <h6 class="fw-bold mb-2"
+                        style="color:#0f766e;">
+
+                        <i class="bi bi-chat-left-text me-2"></i>
+                        Active Chats
+
+                    </h6>
+
+                    <p class="small text-muted mb-0">
+                        Open accepted requests and communicate
+                        directly with students.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{%include 'includes/footer.html'%}
+{% include 'includes/sidebar.html' %}
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,807 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>AI Chat Support | MindCare</title>
+
+    <!-- Bootstrap 5.3.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+
+        :root {
+            --mindcare-navy: #06232d;
+            --mindcare-teal: #0e4a5c;
+            --mindcare-mint: #14b8a6;
+            --mindcare-bg: #f0f4f8;
+        }
+
+        body {
+            background: var(--mindcare-bg);
+            color: #1e293b;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* HERO SECTION */
+
+        .chat-hero {
+            background: linear-gradient(
+                135deg,
+                var(--mindcare-navy),
+                var(--mindcare-teal)
+            );
+            color: white;
+            padding: 45px 15px 100px;
+            border-radius: 0 0 28px 28px;
+            text-align: center;
+        }
+
+        .chat-hero h2 {
+            font-weight: 700;
+        }
+
+        .chat-hero p {
+            color: #cbdde2;
+            max-width: 650px;
+            margin: auto;
+        }
+
+        .hero-badge {
+            background: rgba(45, 212, 191, .15);
+            color: #2dd4bf;
+        }
+
+        /* MAIN CHAT CONTAINER */
+
+        .chat-wrapper {
+            max-width: 900px;
+            margin: -65px auto 60px;
+            position: relative;
+        }
+
+        .chat-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(6, 35, 45, .09);
+        }
+
+        /* CHAT HEADER */
+
+        .chat-header {
+            background: var(--mindcare-navy);
+            color: white;
+            padding: 20px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .bot-profile {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .bot-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 15px;
+            background: rgba(20, 184, 166, .18);
+            color: var(--mindcare-mint);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
+        }
+
+        .chat-header h5 {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .chat-header small {
+            color: #b7d9d9;
+        }
+
+        .online-dot {
+            height: 8px;
+            width: 8px;
+            display: inline-block;
+            border-radius: 50%;
+            background: var(--mindcare-mint);
+            margin-right: 5px;
+        }
+
+        /* CHAT BODY */
+
+        .chat-body {
+            height: 430px;
+            padding: 25px;
+            overflow-y: auto;
+            background: #f8fafc;
+        }
+
+        .welcome-message {
+            text-align: center;
+            padding: 10px 10px 25px;
+        }
+
+        .welcome-icon {
+            width: 65px;
+            height: 65px;
+            margin: auto auto 15px;
+            background: #e5f4f2;
+            color: var(--mindcare-teal);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        .welcome-message h6 {
+            color: var(--mindcare-navy);
+            font-weight: 700;
+        }
+
+        .welcome-message p {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        /* MESSAGE BUBBLES */
+
+        .message-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: flex-end;
+        }
+
+        .message-row.user {
+            justify-content: flex-end;
+        }
+
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
+            border-radius: 10px;
+            background: #e5f4f2;
+            color: var(--mindcare-teal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .message-bubble {
+            max-width: 75%;
+            padding: 12px 16px;
+            border-radius: 15px;
+            font-size: 13px;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+            white-space: pre-wrap;
+        }
+
+        .bot-message {
+            background: #e5f4f2;
+            color: var(--mindcare-navy);
+            border-bottom-left-radius: 3px;
+        }
+
+        .user-message {
+            background: var(--mindcare-teal);
+            color: white;
+            border-bottom-right-radius: 3px;
+        }
+
+        .message-time {
+            display: block;
+            font-size: 10px;
+            margin-top: 5px;
+            opacity: .65;
+        }
+
+        /* TYPING INDICATOR */
+
+        .typing-indicator {
+            display: flex;
+            gap: 5px;
+            padding: 13px 16px;
+            background: #e5f4f2;
+            border-radius: 15px;
+            width: fit-content;
+        }
+
+        .typing-indicator span {
+            width: 7px;
+            height: 7px;
+            background: var(--mindcare-teal);
+            border-radius: 50%;
+            animation: typing 1s infinite ease-in-out;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: .2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: .4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+
+            30% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* SUGGESTION CARDS */
+
+        .suggestion-section {
+            padding: 20px 25px 10px;
+            background: white;
+        }
+
+        .suggestion-section h6 {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--mindcare-navy);
+        }
+
+        .suggestion-btn {
+            background: #f4faf9;
+            border: 1px solid #cce8e3;
+            color: var(--mindcare-teal);
+            border-radius: 30px;
+            padding: 8px 15px;
+            font-size: 12px;
+            margin: 5px 5px 5px 0;
+            transition: .2s;
+        }
+
+        .suggestion-btn:hover {
+            background: var(--mindcare-teal);
+            color: white;
+        }
+
+        /* CHAT INPUT */
+
+        .chat-footer {
+            padding: 15px 25px 20px;
+            background: white;
+            border-top: 1px solid #edf0f2;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: #f8fafc;
+            border: 1px solid #dce5e8;
+            border-radius: 35px;
+            padding: 5px 7px 5px 18px;
+        }
+
+        .chat-input {
+            flex: 1;
+            min-width: 0;
+            border: none;
+            outline: none;
+            background: transparent;
+            padding: 10px 0;
+            font-size: 13px;
+        }
+
+        .send-btn {
+            width: 43px;
+            height: 43px;
+            min-width: 43px;
+            border: none;
+            border-radius: 50%;
+            background: var(--mindcare-mint);
+            color: white;
+            font-size: 17px;
+            transition: .3s;
+        }
+
+        .send-btn:hover {
+            background: var(--mindcare-teal);
+        }
+
+        .send-btn:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
+
+        .chat-note {
+            font-size: 10px;
+            color: #94a3b8;
+            text-align: center;
+            margin-top: 13px;
+        }
+
+        /* SCROLLBAR */
+
+        .chat-body::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .chat-body::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-width: 576px) {
+
+            .chat-hero {
+                padding: 35px 15px 90px;
+            }
+
+            .chat-wrapper {
+                margin: -60px 10px 40px;
+            }
+
+            .chat-body {
+                height: 430px;
+                padding: 15px;
+            }
+
+            .message-bubble {
+                max-width: 85%;
+            }
+
+            .chat-header {
+                padding: 16px;
+            }
+
+            .suggestion-section {
+                padding: 15px;
+            }
+
+            .chat-footer {
+                padding: 12px 15px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    {% include 'includes/navbar.html' %}
+
+    <!-- HERO SECTION -->
+
+    <section class="chat-hero">
+
+        <div class="container">
+
+            <span class="badge rounded-pill hero-badge px-3 py-2 mb-3">
+                <i class="bi bi-heart-pulse-fill me-1"></i>
+                MINDCARE SUPPORT
+            </span>
+
+            <h2 class="mb-3">
+                AI Chat Support
+            </h2>
+
+            <p>
+                A safe space to share your thoughts,
+                express your feelings and receive
+                supportive mental wellness guidance.
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- MAIN CHAT SECTION -->
+
+    <div class="container chat-wrapper">
+
+        <div class="chat-card">
+
+            <!-- CHAT HEADER -->
+
+            <div class="chat-header">
+
+                <div class="bot-profile">
+
+                    <div class="bot-avatar">
+                        <i class="bi bi-robot"></i>
+                    </div>
+
+                    <div>
+                        <h5>MindCare AI Assistant</h5>
+
+                        <small>
+                            <span class="online-dot"></span>
+                            Mental Wellness Support
+                        </small>
+                    </div>
+
+                </div>
+
+                <div>
+                    <i class="bi bi-shield-check fs-4"
+                        title="Supportive space"></i>
+                </div>
+
+            </div>
+
+            <!-- CHAT BODY -->
+
+            <div class="chat-body" id="chatBody">
+
+                {% if not chat_history %}
+
+                    <div class="welcome-message">
+
+                        <div class="welcome-icon">
+                            <i class="bi bi-chat-heart-fill"></i>
+                        </div>
+
+                        <h6>Welcome to MindCare! 💙</h6>
+
+                        <p>
+                            Hello! I'm here to listen and support you.
+                            Feel free to share what's on your mind.
+                            How are you feeling today?
+                        </p>
+
+                    </div>
+
+                    <div class="message-row bot">
+
+                        <div class="message-avatar">
+                            <i class="bi bi-robot"></i>
+                        </div>
+
+                        <div class="message-bubble bot-message">
+                            Hi! I'm your MindCare AI Assistant.
+
+                            You can talk to me about study stress,
+                            anxiety, daily challenges or your feelings.
+                            Let's take things one step at a time.
+
+                            <span class="message-time">
+                                MindCare Assistant
+                            </span>
+                        </div>
+
+                    </div>
+
+                {% else %}
+
+                    {% for chat in chat_history %}
+
+                        <div class="message-row user">
+
+                            <div class="message-bubble user-message">
+                                {{ chat.message }}
+                            </div>
+
+                        </div>
+
+                        <div class="message-row bot">
+
+                            <div class="message-avatar">
+                                <i class="bi bi-robot"></i>
+                            </div>
+
+                            <div class="message-bubble bot-message">
+                                {{ chat.bot_reply }}
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                {% endif %}
+
+            </div>
+
+            <!-- SUGGESTED QUESTIONS -->
+
+            <div class="suggestion-section">
+
+                <h6>
+                    <i class="bi bi-stars me-1"
+                        style="color:#14b8a6;"></i>
+                    Suggested Topics
+                </h6>
+
+                <button type="button" class="suggestion-btn"
+                    onclick="useSuggestion('I am feeling stressed about my studies.')">
+                    <i class="bi bi-book me-1"></i>
+                    Study Stress
+                </button>
+
+                <button type="button" class="suggestion-btn"
+                    onclick="useSuggestion('I am feeling anxious.')">
+                    <i class="bi bi-heart me-1"></i>
+                    Anxiety
+                </button>
+
+                <button type="button" class="suggestion-btn"
+                    onclick="useSuggestion('I am feeling sad today.')">
+                    <i class="bi bi-emoji-frown me-1"></i>
+                    Feeling Sad
+                </button>
+
+                <button type="button" class="suggestion-btn"
+                    onclick="useSuggestion('How can I improve my sleep?')">
+                    <i class="bi bi-moon me-1"></i>
+                    Better Sleep
+                </button>
+
+            </div>
+
+            <!-- CHAT INPUT -->
+
+            <div class="chat-footer">
+
+                <form id="chatForm">
+
+                    <div class="chat-input-area">
+
+                        <input
+                            type="text"
+                            id="userMessage"
+                            class="chat-input"
+                            placeholder="Share what's on your mind..."
+                            autocomplete="off"
+                            maxlength="2000"
+                            required
+                        >
+
+                        <button type="submit"
+                            class="send-btn"
+                            id="sendBtn">
+
+                            <i class="bi bi-send-fill"></i>
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+                <p class="chat-note">
+                    <i class="bi bi-shield-lock me-1"></i>
+                    Your well-being matters. AI support is not a
+                    replacement for professional counselling.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% include 'includes/footer.html' %}
+    {% include 'includes/sidebar.html' %}
+
+    <!-- BOOTSTRAP JS -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- CHAT INTERFACE JS -->
+
+    <script>
+
+        const chatForm = document.getElementById("chatForm");
+        const userInput = document.getElementById("userMessage");
+        const chatBody = document.getElementById("chatBody");
+        const sendBtn = document.getElementById("sendBtn");
+
+        // Suggested Questions
+
+        function useSuggestion(message) {
+
+            userInput.value = message;
+            userInput.focus();
+
+        }
+
+        // Add Message To Chat
+
+        function addMessage(message, sender) {
+
+            const row = document.createElement("div");
+
+            row.className = "message-row " + sender;
+
+            const bubble = document.createElement("div");
+
+            bubble.className = "message-bubble " +
+                (sender === "user" ? "user-message" : "bot-message");
+
+            bubble.textContent = message;
+
+            if (sender === "bot") {
+
+                const avatar = document.createElement("div");
+
+                avatar.className = "message-avatar";
+
+                avatar.innerHTML = '<i class="bi bi-robot"></i>';
+
+                row.appendChild(avatar);
+
+            }
+
+            row.appendChild(bubble);
+
+            chatBody.appendChild(row);
+
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+        }
+
+        // Show AI Typing Animation
+
+        function showTyping() {
+
+            const row = document.createElement("div");
+
+            row.className = "message-row bot";
+            row.id = "typingRow";
+
+            const avatar = document.createElement("div");
+
+            avatar.className = "message-avatar";
+            avatar.innerHTML = '<i class="bi bi-robot"></i>';
+
+            const typing = document.createElement("div");
+
+            typing.className = "typing-indicator";
+
+            typing.innerHTML = `
+                <span></span>
+                <span></span>
+                <span></span>
+            `;
+
+            row.appendChild(avatar);
+            row.appendChild(typing);
+
+            chatBody.appendChild(row);
+
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+        }
+
+        // Remove Typing Animation
+
+        function removeTyping() {
+
+            const typingRow = document.getElementById("typingRow");
+
+            if (typingRow) {
+                typingRow.remove();
+            }
+
+        }
+
+        // Send Message To Flask Backend
+
+        chatForm.addEventListener("submit", async function(event) {
+
+            event.preventDefault();
+
+            const message = userInput.value.trim();
+
+            if (!message || sendBtn.disabled) {
+                return;
+            }
+
+            // Display student message
+
+            addMessage(message, "user");
+
+            userInput.value = "";
+
+            // Disable button during response
+
+            sendBtn.disabled = true;
+
+            const originalButton = sendBtn.innerHTML;
+
+            sendBtn.innerHTML =
+                '<span class="spinner-border spinner-border-sm"></span>';
+
+            showTyping();
+
+            try {
+
+                const response = await fetch(
+                    "{{ url_for('chatbot_send') }}",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            message: message
+                        })
+                    }
+                );
+
+                const data = await response.json();
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.error || "Unable to get AI response."
+                    );
+
+                }
+
+                removeTyping();
+
+                // Display AI response
+
+                addMessage(data.reply, "bot");
+
+            }
+
+            catch (error) {
+
+                removeTyping();
+
+                addMessage(
+                    error.message || "Something went wrong. Please try again.",
+                    "bot"
+                );
+
+                console.error("Chatbot Error:", error);
+
+            }
+
+            finally {
+
+                sendBtn.disabled = false;
+
+                sendBtn.innerHTML = originalButton;
+
+                userInput.focus();
+
+            }
+
+        });
+
+        // Scroll to latest message on page load
+
+        chatBody.scrollTop = chatBody.scrollHeight;
+
+    </script>
+
+</body>
+
+</html>

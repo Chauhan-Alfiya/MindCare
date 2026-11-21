@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>AI Wellness Assessment | MindCare</title>
+
+
+    <!-- Bootstrap -->
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+
+    <!-- Bootstrap Icons -->
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet">
+
+
+    <!-- Poppins -->
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+
+    <style>
+
+        body {
+            background: #f0f4f8;
+            font-family: "Poppins", sans-serif;
+        }
+
+
+        /* MAIN CONTAINER */
+
+        .assessment-container {
+            max-width: 850px;
+            margin: 50px auto;
+        }
+
+
+        /* MAIN CARD */
+
+        .assessment-card {
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+
+        /* HEADER */
+
+        .assessment-header {
+            background: #06232d;
+            color: white;
+            padding: 30px;
+        }
+
+
+        .assessment-header h2 {
+            font-weight: 700;
+        }
+
+
+        /* CHAT AREA */
+
+        .chat-area {
+            height: 480px;
+            overflow-y: auto;
+            padding: 25px;
+            background: #f8fafc;
+        }
+
+
+        /* MESSAGE ROW */
+
+        .message-row {
+            display: flex;
+            margin-bottom: 18px;
+        }
+
+
+        .message-row.user {
+            justify-content: flex-end;
+        }
+
+
+        .message-row.ai {
+            justify-content: flex-start;
+        }
+
+
+        /* MESSAGE BUBBLE */
+
+        .message-bubble {
+            max-width: 75%;
+            padding: 13px 17px;
+            border-radius: 16px;
+            line-height: 1.6;
+            font-size: 14px;
+            white-space: pre-line;
+        }
+
+
+        /* AI MESSAGE */
+
+        .ai-bubble {
+            background: white;
+            color: #17324d;
+            border: 1px solid #e2e8f0;
+            border-bottom-left-radius: 4px;
+        }
+
+
+        /* USER MESSAGE */
+
+        .user-bubble {
+            background: #0e4a5c;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+
+        /* INPUT AREA */
+
+        .chat-input-area {
+            padding: 20px;
+            border-top: 1px solid #e2e8f0;
+            background: white;
+        }
+
+
+        /* INPUT */
+
+        .message-input {
+            border-radius: 10px;
+            padding: 12px 15px;
+            border: 1px solid #dbe3e8;
+        }
+
+
+        .message-input:focus {
+            border-color: #0e4a5c;
+            box-shadow: 0 0 0 0.2rem rgba(14, 74, 92, 0.12);
+        }
+
+
+        /* SEND BUTTON */
+
+        .send-btn {
+            background: #0e4a5c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 11px 20px;
+            font-weight: 600;
+        }
+
+
+        .send-btn:hover {
+            background: #06232d;
+            color: white;
+        }
+
+
+        /* LOADING */
+
+        .typing {
+            display: none;
+            padding: 10px 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+
+        /* RESULT AREA */
+
+        .result-area {
+            display: none;
+            padding: 30px;
+            text-align: center;
+        }
+
+
+        .result-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 15px;
+
+            border-radius: 50%;
+
+            background: #e8f0f3;
+            color: #0e4a5c;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 32px;
+        }
+
+
+        .risk-badge {
+            display: inline-block;
+
+            padding: 8px 18px;
+
+            border-radius: 30px;
+
+            background: #e8f0f3;
+            color: #0e4a5c;
+
+            font-weight: 600;
+
+            margin: 10px 0 20px;
+        }
+
+
+        .recommendation-box {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: left;
+            color: #475569;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+
+        .suggestion-box {
+            text-align: left;
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+
+        .suggestion-box ul {
+            margin-bottom: 0;
+            padding-left: 20px;
+        }
+
+
+        /* COUNSELLOR BUTTON */
+
+        .counsellor-btn {
+            background: #0e4a5c;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            padding: 12px 22px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+
+        .counsellor-btn:hover {
+            background: #06232d;
+            color: white;
+        }
+
+
+        /* DASHBOARD BUTTON */
+
+        .dashboard-btn {
+            margin-top: 15px;
+            border-radius: 9px;
+            padding: 10px 22px;
+        }
+
+
+        /* MOBILE */
+
+        @media (max-width: 576px) {
+
+            .assessment-container {
+                margin: 20px auto;
+            }
+
+
+            .chat-area {
+                height: 450px;
+                padding: 15px;
+            }
+
+
+            .message-bubble {
+                max-width: 88%;
+            }
+
+
+            .assessment-header {
+                padding: 25px 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container assessment-container">
+
+
+    <div class="assessment-card">
+
+
+        <!-- ================================= -->
+        <!-- HEADER -->
+        <!-- ================================= -->
+
+        <div class="assessment-header">
+
+
+            <h2 class="mb-2">
+
+                <i class="bi bi-robot me-2"></i>
+
+                AI Wellness Assessment
+
+            </h2>
+
+
+            <p class="mb-0">
+
+                Have a short conversation with MindCare AI
+                about how you have been feeling recently.
+
+            </p>
+
+
+        </div>
+
+
+
+        <!-- ================================= -->
+        <!-- CHAT AREA -->
+        <!-- ================================= -->
+
+        <div id="chatSection">
+
+
+            <div
+                class="chat-area"
+                id="chatArea">
+
+
+                <!-- EXISTING AI MESSAGE -->
+
+                {% for message in history %}
+
+
+                    {% if message.role == "assistant" %}
+
+
+                        <div class="message-row ai">
+
+                            <div class="message-bubble ai-bubble">
+
+                                <i class="bi bi-robot me-1"></i>
+
+                                {{ message.content }}
+
+                            </div>
+
+                        </div>
+
+
+                    {% else %}
+
+
+                        <div class="message-row user">
+
+                            <div class="message-bubble user-bubble">
+
+                                {{ message.content }}
+
+                            </div>
+
+                        </div>
+
+
+                    {% endif %}
+
+
+                {% endfor %}
+
+
+            </div>
+
+
+
+            <!-- TYPING INDICATOR -->
+
+            <div
+                class="typing px-4"
+                id="typing">
+
+                <i class="bi bi-three-dots"></i>
+
+                MindCare AI is thinking...
+
+            </div>
+
+
+
+            <!-- INPUT AREA -->
+
+            <div class="chat-input-area">
+
+
+                <form id="assessmentForm">
+
+
+                    <div class="input-group">
+
+
+                        <input
+                            type="text"
+                            class="form-control message-input"
+                            id="messageInput"
+                            placeholder="Type your answer here..."
+                            autocomplete="off"
+                            required>
+
+
+                        <button
+                            type="submit"
+                            class="send-btn"
+                            id="sendButton">
+
+
+                            <i class="bi bi-send-fill"></i>
+
+                            Send
+
+
+                        </button>
+
+
+                    </div>
+
+
+                </form>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- ================================= -->
+        <!-- RESULT AREA -->
+        <!-- ================================= -->
+
+        <div
+            class="result-area"
+            id="resultArea">
+
+
+            <div class="result-icon">
+
+                <i
+                    class="bi bi-heart-pulse"
+                    id="resultIcon">
+                </i>
+
+            </div>
+
+
+            <h2>
+
+                Assessment Complete
+
+            </h2>
+
+
+            <!-- RISK LEVEL -->
+
+            <div
+                class="risk-badge"
+                id="riskLevel">
+
+            </div>
+
+
+            <!-- RECOMMENDATION -->
+
+            <div
+                class="recommendation-box"
+                id="recommendation">
+
+            </div>
+
+
+            <!-- SUGGESTIONS -->
+
+            <div
+                class="suggestion-box"
+                id="suggestionBox">
+
+
+                <h6 class="mb-3">
+
+                    <i class="bi bi-lightbulb me-2"></i>
+
+                    Helpful Suggestions
+
+                </h6>
+
+
+                <ul id="suggestionsList">
+
+                </ul>
+
+
+            </div>
+
+
+            <!-- COUNSELLOR SUPPORT -->
+
+            <div
+                id="counsellorSection"
+                style="display:none;">
+
+
+                <div
+                    class="alert alert-warning text-start">
+
+
+                    <strong>
+
+                        <i class="bi bi-chat-heart me-2"></i>
+
+                        Counsellor Support May Help
+
+                    </strong>
+
+
+                    <p class="mb-0 mt-2" id="counsellorMessage"></p>
+
+
+                </div>
+
+
+                <!-- IMPORTANT:
+                     Change counsellors route if your route name is different -->
+
+                <a
+                    href="{{ url_for('counsellors') }}"
+                    class="counsellor-btn">
+
+
+                    <i class="bi bi-chat-heart me-2"></i>
+
+                    Talk to a Counsellor
+
+
+                </a>
+
+
+            </div>
+
+
+            <!-- BACK TO DASHBOARD -->
+
+            <div>
+
+
+                <a
+                    href="{{ url_for('student_dashboard') }}"
+                    class="btn btn-outline-secondary dashboard-btn">
+
+
+                    <i class="bi bi-house me-1"></i>
+
+                    Back to Dashboard
+
+
+                </a>
+
+
+            </div>
+
+
+            <!-- DISCLAIMER -->
+
+            <p
+                class="text-muted small mt-4 mb-0">
+
+
+                <i class="bi bi-info-circle me-1"></i>
+
+                This assessment provides general wellness support
+                and is not a medical diagnosis.
+
+
+            </p>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+<!-- ================================= -->
+<!-- JAVASCRIPT -->
+<!-- ================================= -->
+
+<script>
+
+
+    // ============================================
+    // GET ELEMENTS
+    // ============================================
+
+    const assessmentForm =
+        document.getElementById("assessmentForm");
+
+
+    const messageInput =
+        document.getElementById("messageInput");
+
+
+    const chatArea =
+        document.getElementById("chatArea");
+
+
+    const typing =
+        document.getElementById("typing");
+
+
+    const sendButton =
+        document.getElementById("sendButton");
+
+
+    // ============================================
+    // ADD MESSAGE
+    // ============================================
+
+    function addMessage(message, sender) {
+
+
+        const row =
+            document.createElement("div");
+
+
+        row.className =
+            "message-row " + sender;
+
+
+        const bubble =
+            document.createElement("div");
+
+
+        bubble.className =
+            "message-bubble " +
+            (sender === "ai"
+                ? "ai-bubble"
+                : "user-bubble");
+
+
+        // SAFE TEXT DISPLAY
+
+        if (sender === "ai") {
+
+            bubble.innerHTML =
+                '<i class="bi bi-robot me-1"></i>';
+
+
+            const text =
+                document.createTextNode(message);
+
+
+            bubble.appendChild(text);
+
+        }
+
+        else {
+
+            bubble.textContent =
+                message;
+
+        }
+
+
+        row.appendChild(bubble);
+
+
+        chatArea.appendChild(row);
+
+
+        // SCROLL DOWN
+
+        chatArea.scrollTop =
+            chatArea.scrollHeight;
+
+    }
+
+
+    // ============================================
+    // SUBMIT ANSWER
+    // ============================================
+
+    assessmentForm.addEventListener(
+        "submit",
+
+        async function(event) {
+
+
+            event.preventDefault();
+
+
+            const message =
+                messageInput.value.trim();
+
+
+            if (!message) {
+
+                return;
+
+            }
+
+
+            // SHOW STUDENT MESSAGE
+
+            addMessage(
+                message,
+                "user"
+            );
+
+
+            // CLEAR INPUT
+
+            messageInput.value = "";
+
+
+            // DISABLE INPUT
+
+            messageInput.disabled = true;
+
+            sendButton.disabled = true;
+
+
+            // SHOW THINKING
+
+            typing.style.display = "block";
+
+
+            try {
+
+
+                const response =
+                    await fetch(
+                        "{{ url_for('ai_assessment_send') }}",
+                        {
+
+                            method: "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json"
+
+                            },
+
+                            body: JSON.stringify({
+
+                                message: message
+
+                            })
+
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                // HIDE THINKING
+
+                typing.style.display = "none";
+
+
+                // ERROR
+
+                if (!response.ok) {
+
+                    alert(
+                        data.error ||
+                        "Something went wrong."
+                    );
+
+                    messageInput.disabled = false;
+
+                    sendButton.disabled = false;
+
+                    messageInput.focus();
+
+                    return;
+
+                }
+
+
+                // ==================================
+                // ASSESSMENT COMPLETED
+                // ==================================
+
+                if (data.completed === true) {
+
+
+                    document
+                        .getElementById("chatSection")
+                        .style.display = "none";
+
+
+                    document
+                        .getElementById("resultArea")
+                        .style.display = "block";
+
+
+                    // RISK LEVEL
+
+                    document
+                        .getElementById("riskLevel")
+                        .textContent =
+                            data.risk_level ||
+                            "Assessment Complete";
+
+
+                    // RECOMMENDATION
+
+                    document
+                        .getElementById("recommendation")
+                        .textContent =
+                            data.summary || 
+                            "";
+
+
+                    // SUGGESTIONS
+
+                    const suggestionsList =
+                        document.getElementById(
+                            "suggestionsList"
+                        );
+
+
+                    suggestionsList.innerHTML = "";
+
+
+                    if (
+                        Array.isArray(
+                            data.suggestions
+                        )
+                    ) {
+
+                        data.suggestions.forEach(
+                            function(suggestion) {
+
+
+                                const li =
+                                    document.createElement("li");
+
+
+                                li.textContent =
+                                    suggestion;
+
+
+                                suggestionsList
+                                    .appendChild(li);
+
+                            }
+                        );
+
+                    }
+
+
+                    // COUNSELLOR SUPPORT
+
+                    if (data.counsellor_recommended === true) {
+
+                        document
+                            .getElementById("counsellorSection")
+                            .style.display = "block";
+
+                        document
+                            .getElementById("counsellorMessage")
+                            .textContent =
+                                data.counsellor_message || 
+                                "Talking with a school counsellor may be helpful.";
+                    }
+
+
+                    // CHANGE ICON FOR URGENT SUPPORT
+
+                    if (
+                        data.risk_level ===
+                        "Urgent Support"
+                    ) {
+
+                        document
+                            .getElementById(
+                                "resultIcon"
+                            )
+                            .className =
+                            "bi bi-exclamation-triangle";
+
+                    }
+
+
+                    return;
+
+                }
+
+
+                // ==================================
+                // AI NEXT QUESTION
+                // ==================================
+
+                if (data.reply && data.reply.trim() !== "") {
+
+                    addMessage(data.reply, "ai");
+
+                } else {
+
+                    alert("AI could not generate the next question. Please try again.");
+
+                }
+
+
+                // ENABLE INPUT
+
+                messageInput.disabled = false;
+
+                sendButton.disabled = false;
+
+                messageInput.focus();
+
+
+            }
+
+
+            catch (error) {
+
+
+                typing.style.display = "none";
+
+
+                alert(
+                    "Unable to connect to MindCare AI."
+                );
+
+
+                messageInput.disabled = false;
+
+                sendButton.disabled = false;
+
+                messageInput.focus();
+
+            }
+
+
+        }
+    );
+
+
+    // ============================================
+    // AUTO SCROLL ON PAGE LOAD
+    // ============================================
+
+    chatArea.scrollTop =
+        chatArea.scrollHeight;
+
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>Counsellor Chat | MindCare</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+
+        body {
+            background: #f0f4f8;
+            font-family: "Poppins", sans-serif;
+        }
+
+        .chat-container {
+            max-width: 850px;
+            margin: 40px auto;
+        }
+
+        .chat-card {
+            background: white;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.08);
+        }
+
+        .chat-header {
+            background: #06232d;
+            color: white;
+            padding: 25px;
+        }
+
+        .chat-header h4 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .chat-header small {
+            opacity: .8;
+        }
+
+        .chat-body {
+            height: 500px;
+            overflow-y: auto;
+            padding: 25px;
+            background: #f8fafc;
+        }
+
+        .message-row {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .message-row.own {
+    justify-content: flex-end;
+}
+
+.message-row.other {
+    justify-content: flex-start;
+}
+
+.own .message {
+    background: #0e4a5c;
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+
+.other .message {
+    background: white;
+    color: #17324d;
+    border: 1px solid #e2e8f0;
+    border-bottom-left-radius: 4px;
+}
+        .message {
+    max-width: 75%;
+    padding: 12px 16px;
+    border-radius: 15px;
+    font-size: 14px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.message-time {
+    display: block;
+    font-size: 10px;
+    margin-top: 5px;
+    opacity: .65;
+}
+
+        .chat-footer {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .chat-input {
+            border-radius: 12px;
+            padding: 12px 15px;
+        }
+
+        .send-btn {
+            background: #0e4a5c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 22px;
+            font-weight: 600;
+        }
+
+        .send-btn:hover {
+            background: #06232d;
+            color: white;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container chat-container">
+
+    <div class="chat-card">
+
+        <!-- HEADER -->
+
+        <div class="chat-header">
+
+            {% if role == "STUDENT" %}
+
+                <h4>
+                    <i class="bi bi-person-heart me-2"></i>
+                    {{ counsellor.username }}
+                </h4>
+
+                <small>
+                    {{ counsellor.specialization }}
+                    {% if counsellor.qualification %}
+                        · {{ counsellor.qualification }}
+                    {% endif %}
+                </small>
+
+            {% else %}
+
+                <h4>
+                    <i class="bi bi-chat-heart me-2"></i>
+                    {{ student.username }}
+                </h4>
+
+                <small>
+                    {{ student.email }}
+
+                    {% if student.class %}
+                        · {{ student.class }}
+                    {% endif %}
+
+                    {% if student.stream %}
+                        · {{ student.stream }}
+                    {% endif %}
+                </small>
+
+            {% endif %}
+
+        </div>
+
+
+
+<!-- CHAT BODY -->
+
+<div class="chat-body"
+     id="chatBody"
+     data-last-id="{{ messages[-1].chat_id if messages else 0 }}">
+
+    {% if messages %}
+
+        {% for msg in messages %}
+
+            <div class="message-row
+                {% if msg.sender_role == role %}
+                    own
+                {% else %}
+                    other
+                {% endif %}
+            "
+            data-chat-id="{{ msg.chat_id }}">
+
+                <div class="message">
+
+                    {{ msg.message }}
+
+                    <span class="message-time">
+                        {{ msg.created_at.strftime("%d %b %Y, %I:%M %p") }}
+                    </span>
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="text-center text-muted mt-5" id="emptyChat">
+
+            <i class="bi bi-chat-heart"
+               style="font-size:45px;"></i>
+
+            <p class="mt-3">No messages yet.</p>
+
+            <small>Start the conversation.</small>
+
+        </div>
+
+    {% endif %}
+
+</div>
+<!-- End chat-body -->
+        
+
+<!-- SEND MESSAGE -->
+
+<div class="chat-footer">
+
+    <form id="messageForm">
+
+        <div class="input-group">
+
+            <input
+                type="text"
+                id="messageInput"
+                class="form-control chat-input"
+                placeholder="Type your message..."
+                maxlength="2000"
+                autocomplete="off"
+                required>
+
+            <button
+                type="submit"
+                id="sendButton"
+                class="send-btn ms-2">
+
+                <i class="bi bi-send-fill me-1"></i>
+                Send
+
+            </button>
+
+        </div>
+
+    </form>
+
+    <small id="chatStatus" class="text-muted d-block mt-2"></small>
+
+    <!-- COMPLETE COUNSELLING -->
+
+    {% if role == "COUNSELLOR" %}
+
+        <div class="text-center mt-3">
+
+            <form
+                method="POST"
+                action="{{ url_for('complete_counselling', request_id=request_id) }}">
+
+                <button type="submit" class="btn btn-success">
+
+                    <i class="bi bi-check-circle me-1"></i>
+                    Complete Counselling
+
+                </button>
+
+            </form>
+
+        </div>
+
+    {% endif %}
+
+</div>
+<!-- End chat-footer -->
+
+</div> <!-- End chat-card -->
+<!-- BACK BUTTON -->
+
+<div class="text-center mt-3">
+
+    {% if role == "STUDENT" %}
+
+        <a
+            href="{{ url_for('counsellors') }}"
+            class="btn btn-outline-secondary">
+
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Counsellors
+
+        </a>
+
+    {% else %}
+
+        <a
+            href="{{ url_for('counsellor_dashboard') }}"
+            class="btn btn-outline-secondary">
+
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Dashboard
+
+        </a>
+
+    {% endif %}
+
+</div>
+
+</div> <!-- End container -->
+
+
+
+<script>
+
+const chatBody = document.getElementById("chatBody");
+const messageForm = document.getElementById("messageForm");
+const messageInput = document.getElementById("messageInput");
+const sendButton = document.getElementById("sendButton");
+const chatStatus = document.getElementById("chatStatus");
+
+const sendUrl = "{{ url_for('send_counsellor_chat_message', request_id=request_id) }}";
+const fetchUrl = "{{ url_for('get_counsellor_chat_messages', request_id=request_id) }}";
+
+let lastChatId = Number(chatBody.dataset.lastId || 0);
+let isSending = false;
+let isFetching = false;
+
+function scrollToBottom() {
+    chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+function addMessage(msg) {
+
+    if (Number(msg.chat_id) <= lastChatId) return;
+
+    const emptyChat = document.getElementById("emptyChat");
+
+    if (emptyChat) {
+        emptyChat.remove();
+    }
+
+    const row = document.createElement("div");
+
+    row.className = "message-row " +
+        (msg.sender_role === "{{ role }}" ? "own" : "other");
+
+    row.dataset.chatId = msg.chat_id;
+
+    const bubble = document.createElement("div");
+    bubble.className = "message";
+
+    bubble.appendChild(
+        document.createTextNode(msg.message)
+    );
+
+    const time = document.createElement("span");
+    time.className = "message-time";
+    time.textContent = msg.created_at;
+
+    bubble.appendChild(time);
+    row.appendChild(bubble);
+    chatBody.appendChild(row);
+
+    lastChatId = Number(msg.chat_id);
+
+    scrollToBottom();
+}
+
+
+// SEND MESSAGE
+
+messageForm.addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    if (isSending) return;
+
+    const message = messageInput.value.trim();
+
+    if (!message) return;
+
+    isSending = true;
+    sendButton.disabled = true;
+    chatStatus.textContent = "Sending...";
+
+    try {
+
+        const response = await fetch(sendUrl, {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            credentials: "same-origin",
+
+            body: JSON.stringify({
+                message: message
+            })
+
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(data.error || "Message could not be sent");
+        }
+
+        addMessage(data.message);
+
+        messageInput.value = "";
+        chatStatus.textContent = "";
+        messageInput.focus();
+
+    } catch (error) {
+
+        chatStatus.textContent = error.message;
+
+    } finally {
+
+        isSending = false;
+        sendButton.disabled = false;
+
+    }
+
+});
+
+
+// FETCH NEW MESSAGES
+
+async function fetchNewMessages() {
+
+    if (isFetching || isSending) return;
+
+    isFetching = true;
+
+    try {
+
+        const response = await fetch(
+            fetchUrl + "?last_id=" + lastChatId,
+            {
+                method: "GET",
+                credentials: "same-origin",
+                cache: "no-store"
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(data.error || "Unable to fetch messages");
+        }
+
+        data.messages.forEach(function(msg) {
+            addMessage(msg);
+        });
+
+    } catch (error) {
+
+        console.error("Chat update error:", error);
+
+    } finally {
+
+        isFetching = false;
+
+    }
+
+}
+
+scrollToBottom();
+
+setInterval(fetchNewMessages, 2000);
+
+    
+</script>
+
+</body>
+
+</html>

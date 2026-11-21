@@ -1,0 +1,656 @@
+<style>
+
+:root{
+    --mindcare-navy:#06232d;
+    --mindcare-teal:#0e4a5c;
+    --mindcare-mint:#14b8a6;
+    --mindcare-bg:#f5f7fb;
+}
+
+
+/* ===============================
+   OFFCANVAS
+================================ */
+
+.offcanvas{
+    width:360px !important;
+    border:none;
+    border-radius:22px 0 0 22px;
+    overflow:hidden;
+}
+
+.offcanvas-header{
+    padding:22px 25px;
+    border-bottom:1px solid #e9ecef;
+    background:#fff;
+}
+
+.offcanvas-title{
+
+    color:var(--mindcare-navy);
+    font-weight:700;
+    font-size:1.1rem;
+
+}
+
+.offcanvas-body{
+
+    background:var(--mindcare-bg);
+    padding:22px;
+
+}
+
+
+
+/* ===============================
+   PROFILE CARD
+================================ */
+
+.profile-card{
+
+    background:#fff;
+    border-radius:22px;
+    padding:28px 20px;
+
+    text-align:center;
+
+    box-shadow:0 8px 22px rgba(0,0,0,.06);
+
+    margin-bottom:25px;
+
+}
+
+
+.profile-avatar{
+
+    width:95px;
+    height:95px;
+
+    margin:auto;
+
+    border-radius:50%;
+
+    background:linear-gradient(
+        135deg,
+        var(--mindcare-teal),
+        var(--mindcare-mint)
+    );
+
+    color:#fff;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:34px;
+
+    font-weight:700;
+
+    margin-bottom:18px;
+
+}
+
+
+.profile-name{
+
+    font-size:1.25rem;
+
+    font-weight:700;
+
+    color:#1e293b;
+
+}
+
+
+.profile-role{
+
+    display:inline-block;
+
+    margin-top:10px;
+
+    padding:7px 18px;
+
+    background:#e7f7f3;
+
+    color:var(--mindcare-teal);
+
+    border-radius:30px;
+
+    font-size:.82rem;
+
+    font-weight:600;
+
+}
+
+
+
+/* ===============================
+   MENU CARD
+================================ */
+
+.sidebar-menu{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+}
+
+
+.sidebar-link{
+
+    background:#fff;
+
+    border-radius:18px;
+
+    text-decoration:none;
+
+    color:#334155;
+
+    padding:15px 18px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    transition:.25s;
+
+    box-shadow:0 4px 12px rgba(0,0,0,.04);
+
+}
+
+
+.sidebar-link:hover{
+
+    background:var(--mindcare-teal);
+
+    color:#fff;
+
+    transform:translateX(5px);
+
+}
+
+
+.sidebar-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+}
+
+
+.sidebar-left i{
+
+    font-size:20px;
+
+}
+
+
+.sidebar-right{
+
+    font-size:14px;
+
+}
+
+
+
+/* ===============================
+   LOGOUT
+================================ */
+
+.logout-btn{
+
+    margin-top:28px;
+
+    background:#dc3545;
+
+    color:#fff;
+
+    border-radius:18px;
+
+    padding:15px;
+
+    text-decoration:none;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:10px;
+
+    font-weight:600;
+
+    transition:.25s;
+
+}
+
+
+.logout-btn:hover{
+
+    background:#bb2d3b;
+
+    color:#fff;
+
+}
+
+
+
+/* ===============================
+   MOBILE
+================================ */
+
+@media(max-width:576px){
+
+.offcanvas{
+
+width:100% !important;
+
+border-radius:0;
+
+}
+
+}
+
+</style>
+<!-- ==========================================
+        SIDEBAR START
+=========================================== -->
+
+<div class="offcanvas offcanvas-end"
+     tabindex="-1"
+     id="accountSidebar">
+
+    <!-- Header -->
+
+    <div class="offcanvas-header">
+
+        <h5 class="offcanvas-title">
+
+            My Account
+
+        </h5>
+
+        <button
+            type="button"
+            class="btn-close shadow-none"
+            data-bs-dismiss="offcanvas">
+        </button>
+
+    </div>
+
+
+
+    <!-- Body -->
+
+    <div class="offcanvas-body">
+
+
+
+        <!-- =============================
+                PROFILE CARD
+        ============================== -->
+
+        <div class="profile-card">
+
+            <div class="profile-avatar">
+
+                {{ session['username'][0]|upper }}
+
+            </div>
+
+
+            <div class="profile-name">
+
+                {{ session['username'] }}
+
+            </div>
+
+
+            <div class="profile-role">
+
+                {{ session['role'] }}
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =============================
+                MENU START
+        ============================== -->
+
+        <div class="sidebar-menu">
+            <!-- ==========================================
+        STUDENT MENU
+=========================================== -->
+
+{% if session['role'] == 'STUDENT' %}
+
+<a href="{{ url_for('student_dashboard') }}" class="sidebar-link">
+
+    <div class="sidebar-left">
+        <i class="bi bi-grid"></i>
+        <span>Dashboard</span>
+    </div>
+
+    <div class="sidebar-right">
+        <i class="bi bi-chevron-right"></i>
+    </div>
+
+</a>
+
+
+<a href="{{ url_for('appointment') }}" class="sidebar-link">
+
+    <div class="sidebar-left">
+        <i class="bi bi-calendar-plus"></i>
+        <span>Book Appointment</span>
+    </div>
+
+    <div class="sidebar-right">
+        <i class="bi bi-chevron-right"></i>
+    </div>
+
+</a>
+
+
+<a href="{{ url_for('my_appointments') }}" class="sidebar-link">
+
+    <div class="sidebar-left">
+        <i class="bi bi-calendar-check"></i>
+        <span>My Appointments</span>
+    </div>
+
+    <div class="sidebar-right">
+        <i class="bi bi-chevron-right"></i>
+    </div>
+
+</a>
+
+
+<a href="{{ url_for('wellness_tracker') }}" class="sidebar-link">
+
+    <div class="sidebar-left">
+        <i class="bi bi-heart-pulse"></i>
+        <span>Wellness Tracker</span>
+    </div>
+
+    <div class="sidebar-right">
+        <i class="bi bi-chevron-right"></i>
+    </div>
+
+</a>
+
+
+<a href="{{ url_for('wellness_history') }}" class="sidebar-link">
+
+    <div class="sidebar-left">
+        <i class="bi bi-clock-history"></i>
+        <span>Wellness History</span>
+    </div>
+
+    <div class="sidebar-right">
+        <i class="bi bi-chevron-right"></i>
+    </div>
+
+</a>
+
+<a href="{{ url_for('ai_assessment') }}" class="sidebar-link">
+
+    <div class="sidebar-left">
+        <i class="bi bi-clipboard2-pulse"></i>
+        <span>Assessment</span>
+    </div>
+
+    <div class="sidebar-right">
+        <i class="bi bi-chevron-right"></i>
+    </div>
+
+</a>
+
+<a href="{{ url_for('resources') }}" class="sidebar-link">
+
+    <div class="sidebar-left">
+        <i class="bi bi-journal-bookmark"></i>
+        <span>Wellness Resources</span>
+    </div>
+
+    <div class="sidebar-right">
+        <i class="bi bi-chevron-right"></i>
+    </div>
+
+</a>
+<a href="{{ url_for('counsellors') }}" class="sidebar-link">
+
+    <div class="sidebar-left">
+        <i class="bi bi-journal-bookmark"></i>
+        <span>Counsellors</span>
+    </div>
+
+    <div class="sidebar-right">
+        <i class="bi bi-chevron-right"></i>
+    </div>
+
+</a>
+
+
+<a href="{{ url_for('profile') }}" class="sidebar-link">
+
+    <div class="sidebar-left">
+        <i class="bi bi-person-circle"></i>
+        <span>Profile</span>
+    </div>
+
+    <div class="sidebar-right">
+        <i class="bi bi-chevron-right"></i>
+    </div>
+</a>
+
+{% endif %}
+<!-- ==========================================
+        COUNSELLOR MENU
+=========================================== -->
+
+{% if session.get("role") == "COUNSELLOR" %}
+
+<a href="{{ url_for('counsellor_dashboard') }}" class="sidebar-link">
+
+    <div class="sidebar-left">
+        <i class="bi bi-grid"></i>
+        <span>Dashboard</span>
+    </div>
+
+    <div class="sidebar-right">
+        <i class="bi bi-chevron-right"></i>
+    </div>
+
+</a>
+
+
+
+
+<a href="{{ url_for('my_appointments') }}" class="sidebar-link">
+
+    <div class="sidebar-left">
+        <i class="bi bi-calendar-check"></i>
+        <span>Appointments</span>
+    </div>
+
+    <div class="sidebar-right">
+        <i class="bi bi-chevron-right"></i>
+    </div>
+
+</a>
+
+
+<a href="{{ url_for('wellness_history') }}" class="sidebar-link">
+
+    <div class="sidebar-left">
+        <i class="bi bi-people"></i>
+        <span>Student Wellness</span>
+    </div>
+
+    <div class="sidebar-right">
+        <i class="bi bi-chevron-right"></i>
+    </div>
+
+</a>
+
+
+<a href="{{ url_for('resources') }}" class="sidebar-link">
+
+    <div class="sidebar-left">
+        <i class="bi bi-journal-bookmark"></i>
+        <span>Resources</span>
+    </div>
+
+    <div class="sidebar-right">
+        <i class="bi bi-chevron-right"></i>
+    </div>
+
+</a>
+
+
+<a href="{{ url_for('profile') }}" class="sidebar-link">
+
+    <div class="sidebar-left">
+        <i class="bi bi-person-circle"></i>
+        <span>Profile</span>
+    </div>
+
+    <div class="sidebar-right">
+        <i class="bi bi-chevron-right"></i>
+    </div>
+
+</a>
+
+{% endif %}
+<!-- ==========================================
+        ADMIN MENU
+=========================================== -->
+
+{% if session['role'] == 'ADMIN' %}
+
+<a href="{{ url_for('admin_dashboard') }}" class="sidebar-link">
+
+    <div class="sidebar-left">
+        <i class="bi bi-grid"></i>
+        <span>Dashboard</span>
+    </div>
+
+    <div class="sidebar-right">
+        <i class="bi bi-chevron-right"></i>
+    </div>
+
+</a>
+
+
+<a href="#" class="sidebar-link">
+
+    <div class="sidebar-left">
+        <i class="bi bi-people"></i>
+        <span>Manage Students</span>
+    </div>
+
+    <div class="sidebar-right">
+        <i class="bi bi-chevron-right"></i>
+    </div>
+
+</a>
+
+
+<a href="#" class="sidebar-link">
+
+    <div class="sidebar-left">
+        <i class="bi bi-person-workspace"></i>
+        <span>Manage Counsellors</span>
+    </div>
+
+    <div class="sidebar-right">
+        <i class="bi bi-chevron-right"></i>
+    </div>
+
+</a>
+
+
+<a href="#" class="sidebar-link">
+
+    <div class="sidebar-left">
+        <i class="bi bi-calendar-check"></i>
+        <span>Appointments</span>
+    </div>
+
+    <div class="sidebar-right">
+        <i class="bi bi-chevron-right"></i>
+    </div>
+
+</a>
+
+
+<a href="{{ url_for('resources') }}" class="sidebar-link">
+
+    <div class="sidebar-left">
+        <i class="bi bi-journal-bookmark"></i>
+        <span>Resources</span>
+    </div>
+
+    <div class="sidebar-right">
+        <i class="bi bi-chevron-right"></i>
+    </div>
+
+</a>
+
+
+<a href="{{ url_for('profile') }}" class="sidebar-link">
+
+    <div class="sidebar-left">
+        <i class="bi bi-person-circle"></i>
+        <span>Profile</span>
+    </div>
+
+    <div class="sidebar-right">
+        <i class="bi bi-chevron-right"></i>
+    </div>
+
+</a>
+
+{% endif %}
+
+
+
+<!-- ==========================================
+        LOGOUT
+=========================================== -->
+
+<hr class="my-4">
+
+<a href="{{ url_for('logout') }}" class="logout-btn">
+
+    <i class="bi bi-box-arrow-right"></i>
+
+    Logout
+
+</a>
+
+
+<!-- ==========================================
+        SIDEBAR END
+=========================================== -->
+
+        </div>
+
+    </div>
+
+</div>

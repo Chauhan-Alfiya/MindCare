@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Book Counselling | MindCare</title>
+
+    <!-- Bootstrap 5 -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet">
+
+
+    <style>
+
+        :root {
+            --mindcare-navy: #06232d;
+            --mindcare-teal: #0e4a5c;
+            --mindcare-mint: #14b8a6;
+            --mindcare-bg: #f0f4f8;
+        }
+
+
+        body {
+
+            background: var(--mindcare-bg);
+
+            color: #1e293b;
+
+        }
+
+
+        .page-hero {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--mindcare-navy),
+                    var(--mindcare-teal)
+                );
+
+            border-radius: 0 0 30px 30px;
+
+        }
+
+
+        .booking-card {
+
+            background: #ffffff;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 22px;
+
+            box-shadow:
+                0 10px 30px rgba(6, 35, 45, .07);
+
+        }
+
+
+        .form-label {
+
+            font-weight: 600;
+
+            color: #334155;
+
+        }
+
+
+        .form-control,
+        .form-select {
+
+            border-radius: 12px;
+
+            padding: 12px 14px;
+
+            border: 1px solid #dbe3ea;
+
+        }
+
+
+        .form-control:focus,
+        .form-select:focus {
+
+            border-color: var(--mindcare-mint);
+
+            box-shadow:
+                0 0 0 .2rem rgba(20,184,166,.12);
+
+        }
+
+
+        .input-icon {
+
+            width: 46px;
+
+            height: 46px;
+
+            border-radius: 13px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background: #e7f7f3;
+
+            color: #0e7490;
+
+            font-size: 1.15rem;
+
+            flex-shrink: 0;
+
+        }
+
+
+        .info-card {
+
+            background: #f8fafc;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 16px;
+
+        }
+
+
+        .btn-book {
+
+            background: var(--mindcare-mint);
+
+            color: #ffffff;
+
+            border: none;
+
+            border-radius: 50px;
+
+            padding: 12px 28px;
+
+            font-weight: 600;
+
+        }
+
+
+        .btn-book:hover {
+
+            background: #0f9f90;
+
+            color: #ffffff;
+
+        }
+
+
+        .btn-back {
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 50px;
+
+            padding: 11px 24px;
+
+            font-weight: 600;
+
+            color: #334155;
+
+        }
+
+
+        .required-star {
+
+            color: #dc2626;
+
+        }
+
+
+        textarea {
+
+            min-height: 120px;
+
+            resize: vertical;
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     EXISTING NAVBAR
+===================================================== -->
+
+{% include 'includes/navbar.html' %}
+
+
+
+
+<!-- =====================================================
+     HERO
+===================================================== -->
+
+<section class="page-hero text-white">
+
+    <div class="container py-5 text-center">
+
+        <span
+            class="badge rounded-pill px-3 py-2 mb-3"
+            style="
+                background:rgba(45,212,191,.15);
+                color:#2dd4bf;
+            ">
+
+            <i class="bi bi-shield-check me-1"></i>
+
+            Confidential Counselling
+
+        </span>
+
+
+        <h1 class="display-6 fw-bold mb-3">
+
+            Book a Counselling Appointment
+
+        </h1>
+
+
+        <p
+            class="lead text-white-50 mx-auto mb-0"
+            style="max-width:700px;">
+
+            Choose a counsellor and a convenient time
+            for your confidential counselling session.
+
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
+
+<div class="container py-5">
+
+
+    <!-- =================================================
+         FLASH MESSAGES
+    ================================================== -->
+
+    {% with messages = get_flashed_messages() %}
+
+        {% if messages %}
+
+            <div class="mb-4">
+
+                {% for message in messages %}
+
+                    <div
+                        class="alert alert-info alert-dismissible fade show rounded-4"
+                        role="alert">
+
+                        <i class="bi bi-info-circle-fill me-2"></i>
+
+                        {{ message }}
+
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert">
+                        </button>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+    {% endwith %}
+
+
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+
+            <div class="booking-card p-4 p-md-5">
+
+
+                <!-- =================================================
+                     HEADER
+                ================================================== -->
+
+                <div class="d-flex align-items-center gap-3 mb-4">
+
+                    <div class="input-icon">
+
+                        <i class="bi bi-calendar-heart-fill"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <h4
+                            class="fw-bold mb-1"
+                            style="color:#0e4a5c;">
+
+                            Appointment Details
+
+                        </h4>
+
+
+                        <p class="text-muted small mb-0">
+
+                            Please provide the details for your counselling request.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     BOOKING FORM
+                ================================================== -->
+
+                <form
+                    method="POST"
+                    action="{{ url_for('appointment') }}">
+
+
+                    <!-- =================================================
+                         COUNSELLOR
+                    ================================================== -->
+
+                    <div class="mb-4">
+
+                        <label
+                            for="counsellor_id"
+                            class="form-label">
+
+                            Select Counsellor
+
+                            <span class="required-star">*</span>
+
+                        </label>
+
+
+                        <select
+                            id="counsellor_id"
+                            name="counsellor_id"
+                            class="form-select"
+                            required>
+
+                            <option value="">
+                                Select a counsellor
+                            </option>
+
+
+                            {% for counsellor in counsellors %}
+
+                                <option
+                                    value="{{ counsellor.user_id }}">
+
+                                    {{ counsellor.username }}
+
+                                    {% if counsellor.specialization %}
+
+                                        - {{ counsellor.specialization }}
+
+                                    {% endif %}
+
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+
+                        {% if not counsellors %}
+
+                            <small class="text-danger">
+
+                                No counsellors are currently available.
+
+                            </small>
+
+                        {% else %}
+
+                            <small class="text-muted">
+
+                                Choose the counsellor you would like to contact.
+
+                            </small>
+
+                        {% endif %}
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         DATE + TIME
+                    ================================================== -->
+
+                    <div class="row g-3 mb-4">
+
+
+                        <div class="col-md-6">
+
+                            <label
+                                for="appointment_date"
+                                class="form-label">
+
+                                Appointment Date
+
+                                <span class="required-star">*</span>
+
+                            </label>
+
+
+                            <input
+                                type="date"
+                                id="appointment_date"
+                                name="appointment_date"
+                                class="form-control"
+                                min="{{ today }}"
+                                required>
+
+                        </div>
+
+
+
+                        <div class="col-md-6">
+
+                            <label
+                                for="appointment_time"
+                                class="form-label">
+
+                                Appointment Time
+
+                                <span class="required-star">*</span>
+
+                            </label>
+
+
+                            <input
+                                type="time"
+                                id="appointment_time"
+                                name="appointment_time"
+                                class="form-control"
+                                required>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         REASON
+                    ================================================== -->
+
+                    <div class="mb-4">
+
+                        <label
+                            for="reason"
+                            class="form-label">
+
+                            Reason for Counselling
+
+                            <span class="text-muted fw-normal">
+                                (Optional)
+                            </span>
+
+                        </label>
+
+
+                        <textarea
+                            id="reason"
+                            name="reason"
+                            class="form-control"
+                            maxlength="1000"
+                            placeholder="Briefly describe what you would like support with..."></textarea>
+
+                    </div>
+                    <!-- ================================================
+                         BUTTONS
+                    ================================================== -->
+
+                    <div
+                        class="d-flex flex-wrap gap-2 justify-content-end">
+
+
+                        <a
+                            href="{{ url_for('student_dashboard') }}"
+                            class="btn btn-back">
+
+                            <i class="bi bi-arrow-left me-1"></i>
+
+                            Back
+
+                        </a>
+
+
+                        <button
+                            type="submit"
+                            class="btn btn-book">
+
+                            <i class="bi bi-calendar2-check-fill me-1"></i>
+
+                            Book Appointment
+
+                        </button>
+
+                    </div>
+
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+{% include 'includes/footer.html' %}
+
+
+
+<!-- =====================================================
+     BOOTSTRAP JS
+===================================================== -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+
+</body>
+
+</html>

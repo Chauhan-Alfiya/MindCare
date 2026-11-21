@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>About | MindCare</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body class="bg-light">
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+
+<div class="container">
+
+<a class="navbar-brand fw-bold fs-2 text-primary" href="/">
+    MindCare
+</a>
+
+<button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
+    <span class="navbar-toggler-icon"></span>
+</button>
+
+<div class="collapse navbar-collapse" id="menu">
+
+<ul class="navbar-nav ms-auto">
+
+<li class="nav-item">
+<a class="nav-link" href="/">Home</a>
+</li>
+
+<li class="nav-item">
+<a class="nav-link active fw-semibold text-primary" href="#">About</a>
+</li>
+
+<li class="nav-item">
+<a class="nav-link" href="/assessment">Assessment</a>
+</li>
+
+<li class="nav-item">
+<a class="nav-link" href="/resources">Resources</a>
+</li>
+
+<li class="nav-item ms-3">
+<a class="btn btn-primary rounded-pill px-4" href="/login">
+Login
+</a>
+</li>
+
+</ul>
+
+</div>
+
+</div>
+
+</nav>
+
+<!-- ================= PAGE HEADER ================= -->
+
+<section class="py-5 text-white"
+style="background:linear-gradient(135deg,#0B1F3A,#0E7490);">
+
+<div class="container text-center">
+
+<h1 class="display-4 fw-bold">
+About MindCare
+</h1>
+
+<p class="lead mt-3">
+
+Supporting Students Through Technology,
+Care and Mental Wellness.
+
+</p>
+
+</div>
+
+</section>
+
+<!-- ================= ABOUT ================= -->
+
+<section class="py-5">
+
+<div class="container">
+
+<div class="row align-items-center g-5">
+
+<div class="col-lg-6">
+
+<img src="{{ url_for('static', filename='images/logo.png') }}"
+class="img-fluid rounded shadow">
+
+</div>
+
+<div class="col-lg-6">
+
+<h2 class="fw-bold mb-3">
+
+Who We Are
+
+</h2>
+
+<p class="text-secondary">
+
+MindCare is a Digital Mental Health &
+Psychological Support System designed to help
+students improve their emotional well-being.
+
+</p>
+
+<p class="text-secondary">
+
+The platform provides AI Chat Support,
+Mental Health Assessments, Wellness Resources
+and Counselling Appointment Booking in one secure place.
+
+</p>
+
+<div class="row mt-4">
+
+<div class="col-6 mb-3">
+
+<div class="card shadow-sm border-0 text-center">
+
+<div class="card-body">
+
+<i class="bi bi-chat-heart-fill fs-1 text-primary"></i>
+
+<h5 class="mt-3">AI Support</h5>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-6 mb-3">
+
+<div class="card shadow-sm border-0 text-center">
+
+<div class="card-body">
+
+<i class="bi bi-heart-pulse-fill fs-1 text-success"></i>
+
+<h5 class="mt-3">Assessment</h5>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ================= OUR MISSION ================= -->
+
+<section class="py-5 bg-white">
+
+<div class="container">
+
+<h2 class="text-center fw-bold mb-5">
+
+Our Mission
+
+</h2>
+
+<div class="row g-4">
+
+<div class="col-md-4">
+
+<div class="card h-100 border-0 shadow-sm">
+
+<div class="card-body text-center">
+
+<i class="bi bi-shield-check fs-1 text-primary"></i>
+
+<h5 class="mt-3">
+
+Safe & Secure
+
+</h5>
+
+<p>
+
+Student information remains confidential.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<div class="card h-100 border-0 shadow-sm">
+
+<div class="card-body text-center">
+
+<i class="bi bi-robot fs-1 text-info"></i>
+
+<h5 class="mt-3">
+
+AI Assistance
+
+</h5>
+
+<p>
+
+24×7 AI powered emotional support.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<div class="card h-100 border-0 shadow-sm">
+
+<div class="card-body text-center">
+
+<i class="bi bi-people-fill fs-1 text-success"></i>
+
+<h5 class="mt-3">
+
+Student Wellbeing
+
+</h5>
+
+<p>
+
+Helping students live healthier and happier lives.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ================= FOOTER ================= -->
+
+     {% include 'includes/footer.html' %}
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

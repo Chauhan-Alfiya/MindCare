@@ -1,0 +1,271 @@
+/*==========================================
+            GOOGLE FONT
+==========================================*/
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+
+    min-height:100vh;
+    background:linear-gradient(135deg,#071C3D,#0B2C59,#0E7490);
+    padding:25px 0;
+
+}
+
+/*==========================================
+            LEFT SIDE
+==========================================*/
+
+.register-left{
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:#fff;
+    padding:35px;
+
+}
+
+.left-content{
+
+    max-width:380px;
+
+}
+
+.logo{
+
+    width:85px;
+    margin-bottom:18px;
+
+}
+
+.left-content h1{
+
+    font-size:36px;
+    font-weight:700;
+    margin-bottom:12px;
+
+}
+
+.left-content p{
+
+    color:#DCE7F5;
+    line-height:26px;
+    font-size:15px;
+    margin-bottom:25px;
+
+}
+
+/*==========================================
+            FEATURE BOX
+==========================================*/
+
+.feature{
+
+    background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:12px;
+    padding:12px 18px;
+    margin-bottom:15px;
+
+}
+
+.feature i{
+
+    color:#14B8A6;
+    margin-right:10px;
+    font-size:18px;
+
+}
+
+/*==========================================
+            REGISTER CARD
+==========================================*/
+
+.register-card{
+
+    width:100%;
+    max-width:500px;
+
+    background:#fff;
+
+    border-radius:20px;
+
+    padding:28px;
+
+    box-shadow:0 20px 45px rgba(0,0,0,.18);
+
+}
+
+.register-card h2{
+
+    color:#0B1F3A;
+    font-size:30px;
+    font-weight:700;
+
+}
+
+.register-card p{
+
+    color:#64748B;
+
+}
+
+/*==========================================
+            FORM
+==========================================*/
+
+.form-label{
+
+    font-weight:600;
+    color:#0B1F3A;
+
+}
+
+.input-group-text{
+
+    background:#EEF4F8;
+    border:none;
+
+}
+
+.input-group-text i{
+
+    color:#0E7490;
+
+}
+
+.form-control,
+.form-select{
+
+    height:45px;
+    background:#EEF4F8;
+    border:none;
+
+}
+
+.form-control:focus,
+.form-select:focus{
+
+    background:#fff;
+    border:2px solid #14B8A6;
+    box-shadow:none;
+
+}
+
+/*==========================================
+            BUTTON
+==========================================*/
+
+.btn-register{
+
+    height:48px;
+
+    border:none;
+
+    border-radius:50px;
+
+    background:linear-gradient(135deg,#0B1F3A,#0E7490);
+
+    color:#fff;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+.btn-register:hover{
+
+    background:linear-gradient(135deg,#14B8A6,#0E7490);
+
+    color:#fff;
+
+    transform:translateY(-2px);
+
+}
+
+/*==========================================
+            LINKS
+==========================================*/
+
+.register-card a{
+
+    text-decoration:none;
+    color:#0E7490;
+    font-weight:600;
+
+}
+
+.register-card a:hover{
+
+    color:#0B1F3A;
+
+}
+
+/*==========================================
+            HR
+==========================================*/
+
+hr{
+
+    margin:20px 0;
+
+}
+
+/*==========================================
+            RESPONSIVE
+==========================================*/
+
+@media(max-width:992px){
+
+.register-left{
+
+display:none;
+
+}
+
+body{
+
+padding:20px;
+
+}
+
+.register-card{
+
+max-width:480px;
+margin:auto;
+
+}
+
+}
+
+@media(max-width:576px){
+
+.register-card{
+
+padding:22px;
+
+}
+
+.register-card h2{
+
+font-size:26px;
+
+}
+
+.logo{
+
+width:75px;
+
+}
+
+}

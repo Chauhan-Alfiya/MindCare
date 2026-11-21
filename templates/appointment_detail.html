@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Appointment Details | MindCare</title>
+
+    <!-- Bootstrap 5 -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet">
+
+    <style>
+
+        :root {
+            --mindcare-navy: #06232d;
+            --mindcare-teal: #0e4a5c;
+            --mindcare-mint: #14b8a6;
+            --mindcare-bg: #f0f4f8;
+        }
+
+        body {
+            background: var(--mindcare-bg);
+            color: #1e293b;
+        }
+
+        .detail-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 50px 20px;
+        }
+
+        .main-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 22px;
+            box-shadow: 0 10px 30px rgba(6,35,45,.06);
+            overflow: hidden;
+        }
+
+        .detail-header {
+            padding: 30px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .detail-header h2 {
+            color: var(--mindcare-navy);
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .detail-header p {
+            color: #64748b;
+            margin-bottom: 0;
+        }
+
+        .detail-body {
+            padding: 30px;
+        }
+
+        .person-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 22px;
+        }
+
+        .person-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: #e7f7f3;
+            color: #0e7490;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+        }
+
+        .detail-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 18px;
+            height: 100%;
+        }
+
+        .detail-label {
+            font-size: .75rem;
+            color: #64748b;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .3px;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .reason-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 22px;
+        }
+
+        .status-badge {
+            font-size: .82rem;
+            padding: 8px 14px;
+            border-radius: 50px;
+        }
+
+        .btn-back {
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            border-radius: 50px;
+            padding: 10px 22px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .btn-back:hover {
+            border-color: var(--mindcare-teal);
+            color: var(--mindcare-teal);
+            background: #ffffff;
+        }
+
+        .btn-success-custom {
+            background: #16a34a;
+            color: #ffffff;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-weight: 600;
+        }
+
+        .btn-danger-custom {
+            background: #dc2626;
+            color: #ffffff;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-weight: 600;
+        }
+
+        .btn-chat {
+            background: #0e4a5c;
+            color: #ffffff;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-weight: 600;
+        }
+
+        .btn-chat:hover {
+            background: #14b8a6;
+            color: #ffffff;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+{% include 'includes/navbar.html' %}
+
+
+
+<div class="detail-container">
+
+
+    <!-- =================================================
+         FLASH MESSAGES
+    ================================================== -->
+
+    {% with messages = get_flashed_messages() %}
+
+        {% if messages %}
+
+            <div class="mb-4">
+
+                {% for message in messages %}
+
+                    <div
+                        class="alert alert-info alert-dismissible fade show rounded-4"
+                        role="alert">
+
+                        <i class="bi bi-info-circle-fill me-2"></i>
+
+                        {{ message }}
+
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert">
+                        </button>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- =================================================
+         MAIN CARD
+    ================================================== -->
+
+    <div class="main-card">
+
+
+        <!-- HEADER -->
+
+        <div class="detail-header">
+
+            <div
+                class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+
+                <div>
+
+                    <h2>
+                        Appointment Details
+                    </h2>
+
+                    <p>
+                        Appointment #{{ appointment.appointment_id }}
+                    </p>
+
+                </div>
+
+
+                <!-- STATUS -->
+
+                <div>
+
+                    {% if appointment.status == "Pending" %}
+
+                        <span
+                            class="badge bg-warning text-dark status-badge">
+
+                            <i class="bi bi-hourglass-split me-1"></i>
+                            Pending
+
+                        </span>
+
+                    {% elif appointment.status == "Approved" %}
+
+                        <span
+                            class="badge bg-success status-badge">
+
+                            <i class="bi bi-check-circle-fill me-1"></i>
+                            Approved
+
+                        </span>
+
+                    {% elif appointment.status == "Completed" %}
+
+                        <span
+                            class="badge bg-primary status-badge">
+
+                            <i class="bi bi-check2-all me-1"></i>
+                            Completed
+
+                        </span>
+
+                    {% elif appointment.status == "Cancelled" %}
+
+                        <span
+                            class="badge bg-danger status-badge">
+
+                            <i class="bi bi-x-circle-fill me-1"></i>
+                            Cancelled
+
+                        </span>
+
+                    {% else %}
+
+                        <span
+                            class="badge bg-secondary status-badge">
+
+                            {{ appointment.status }}
+
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- BODY -->
+
+        <div class="detail-body">
+
+
+            <!-- =================================================
+                 PERSON
+            ================================================== -->
+
+            <div class="person-box mb-4">
+
+                <div class="d-flex align-items-center gap-3">
+
+                    <div class="person-icon">
+
+                        {% if role == "STUDENT" %}
+
+                            <i class="bi bi-person-heart"></i>
+
+                        {% else %}
+
+                            <i class="bi bi-person-vcard-fill"></i>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div>
+
+                        {% if role == "STUDENT" %}
+
+                            <h5 class="fw-bold mb-1">
+
+                                {{ appointment.counsellor_name }}
+
+                            </h5>
+
+                            {% if appointment.specialization %}
+
+                                <div class="text-muted">
+
+                                    {{ appointment.specialization }}
+
+                                </div>
+
+                            {% elif appointment.qualification %}
+
+                                <div class="text-muted">
+
+                                    {{ appointment.qualification }}
+
+                                </div>
+
+                            {% endif %}
+
+                        {% else %}
+
+                            <h5 class="fw-bold mb-1">
+
+                                {{ appointment.student_name }}
+
+                            </h5>
+
+                            <div class="text-muted">
+
+                                {{ appointment.student_email }}
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 DETAILS
+            ================================================== -->
+
+            <div class="row g-3 mb-4">
+
+
+                <!-- DATE -->
+
+                <div class="col-md-4">
+
+                    <div class="detail-box">
+
+                        <div class="detail-label">
+
+                            Appointment Date
+
+                        </div>
+
+                        <div class="detail-value">
+
+                            <i
+                                class="bi bi-calendar3 me-1"
+                                style="color:#0e7490;">
+                            </i>
+
+                            {{ appointment.appointment_date }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- TIME -->
+
+                <div class="col-md-4">
+
+                    <div class="detail-box">
+
+                        <div class="detail-label">
+
+                            Appointment Time
+
+                        </div>
+
+                        <div class="detail-value">
+
+                            <i
+                                class="bi bi-clock me-1"
+                                style="color:#0e7490;">
+                            </i>
+
+                            {{ appointment.appointment_time }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- THIRD DETAIL -->
+
+                <div class="col-md-4">
+
+                    <div class="detail-box">
+
+                        <div class="detail-label">
+
+                            {% if role == "STUDENT" %}
+                                Qualification
+                            {% else %}
+                                Class
+                            {% endif %}
+
+                        </div>
+
+                        <div class="detail-value">
+
+                            {% if role == "STUDENT" %}
+
+                                {{ appointment.qualification or "Not provided" }}
+
+                            {% else %}
+
+                                {{ appointment.student_class or "Not provided" }}
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 REASON
+            ================================================== -->
+
+            <div class="reason-box mb-4">
+
+                <div class="detail-label mb-2">
+
+                    Reason for Counselling
+
+                </div>
+
+                {% if appointment.reason %}
+
+                    <p class="mb-0 text-muted">
+
+                        {{ appointment.reason }}
+
+                    </p>
+
+                {% else %}
+
+                    <p class="mb-0 text-muted">
+
+                        No reason was provided.
+
+                    </p>
+
+                {% endif %}
+
+            </div>
+            {% if role == "STUDENT" and appointment.counsellor_message %}
+
+<div class="reason-box mb-4">
+
+
+    <div class="detail-label mb-2">
+
+        Counsellor Message
+
+    </div>
+
+
+    <p class="text-muted mb-0">
+
+        <i class="bi bi-chat-left-text me-2"></i>
+
+        {{ appointment.counsellor_message }}
+
+    </p>
+
+
+</div>
+
+
+{% endif %}
+<!-- consellor -->
+
+{% if role == "COUNSELLOR" %}
+
+<div class="reason-box mb-4">
+
+    <div class="detail-label mb-2">
+        Counsellor Message
+    </div>
+
+
+    <form method="POST">
+
+
+        <textarea
+        class="form-control"
+        name="counsellor_message"
+        rows="4"
+        placeholder="Example: I am not available today, sorry. Please book another appointment.">{{ appointment.counsellor_message or "" }}</textarea>
+
+
+
+        {% if appointment.status == "Pending" %}
+
+
+        <div class="mt-3 d-flex gap-2">
+
+
+            <button
+            type="submit"
+            name="action"
+            value="approve"
+            class="btn btn-success-custom">
+
+                <i class="bi bi-check-circle me-1"></i>
+
+                Approve
+
+            </button>
+
+
+
+            <button
+            type="submit"
+            name="action"
+            value="cancel"
+            class="btn btn-danger-custom">
+
+
+                <i class="bi bi-x-circle me-1"></i>
+
+                Cancel
+
+            </button>
+
+
+        </div>
+
+
+        {% endif %}
+
+
+    </form>
+
+
+</div>
+
+{% endif %}
+            
+
+
+            
+                
+
+
+
+            <!-- BACK -->
+
+            <div class="mt-4">
+
+                <a
+                    href="{{ url_for('my_appointments') }}"
+                    class="btn-back">
+
+                    <i class="bi bi-arrow-left me-1"></i>
+
+                    Back to Appointments
+
+                </a>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+{% include 'includes/footer.html' %}
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+
+</body>
+
+</html>

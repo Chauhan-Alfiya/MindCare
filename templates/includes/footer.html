@@ -1,0 +1,647 @@
+<!-- ================= FOOTER ================= -->
+
+<style>
+
+.main-footer{
+
+    background:linear-gradient(
+        135deg,
+        #0B1F3A 0%,
+        #0E7490 100%
+    );
+
+    color:#ffffff;
+
+    padding:70px 0 25px;
+
+    margin-top:60px;
+
+}
+
+.footer-container{
+
+    max-width:1200px;
+
+    margin:auto;
+
+    padding:0 24px;
+
+}
+
+.footer-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        1.5fr
+        1fr
+        1fr
+        1.2fr;
+
+    gap:45px;
+
+    margin-bottom:45px;
+
+}
+
+/* ================= BRAND ================= */
+
+.footer-brand .footer-logo{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    margin-bottom:18px;
+
+}
+
+.footer-brand .footer-logo img{
+
+    width:48px;
+
+}
+
+.footer-brand .footer-logo h3{
+
+    margin:0;
+
+    font-size:24px;
+
+    font-weight:700;
+
+    letter-spacing:-.5px;
+
+}
+
+.footer-brand .footer-logo span{
+
+    color:#5EEAD4;
+
+}
+
+.footer-brand p{
+
+    color:#CBD5E1;
+
+    line-height:1.7;
+
+    font-size:14px;
+
+    max-width:380px;
+
+    margin-bottom:22px;
+
+}
+
+/* ================= SOCIAL ================= */
+
+.social-links{
+
+    display:flex;
+
+    gap:10px;
+
+}
+
+.social-links a{
+
+    width:38px;
+
+    height:38px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:10px;
+
+    background:rgba(255,255,255,.08);
+
+    color:#ffffff;
+
+    text-decoration:none;
+
+    transition:.3s;
+
+}
+
+.social-links a:hover{
+
+    background:#14B8A6;
+
+    transform:translateY(-3px);
+
+}
+
+/* ================= COLUMNS ================= */
+
+.footer-column h4{
+
+    color:#ffffff;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    margin-bottom:24px;
+
+    position:relative;
+
+}
+
+.footer-column h4::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    bottom:-8px;
+
+    width:30px;
+
+    height:2px;
+
+    background:#14B8A6;
+
+}
+
+.footer-links{
+
+    list-style:none;
+
+    padding:0;
+
+    margin:0;
+
+}
+
+.footer-links li{
+
+    margin-bottom:12px;
+
+}
+
+.footer-links a{
+
+    color:#CBD5E1;
+
+    text-decoration:none;
+
+    font-size:14px;
+
+    transition:.3s;
+
+}
+
+.footer-links a:hover{
+
+    color:#5EEAD4;
+
+    padding-left:4px;
+
+}
+
+/* ================= CONTACT ================= */
+
+.footer-contact p{
+
+    color:#CBD5E1;
+
+    font-size:14px;
+
+    line-height:1.7;
+
+    margin-bottom:10px;
+
+}
+
+.footer-contact i{
+
+    color:#5EEAD4;
+
+    margin-right:8px;
+
+}
+
+/* ================= NEWSLETTER ================= */
+
+.newsletter-box p{
+
+    color:#CBD5E1;
+
+    font-size:14px;
+
+    line-height:1.6;
+
+    margin-bottom:14px;
+
+}
+
+.newsletter-form{
+
+    display:flex;
+
+    background:rgba(255,255,255,.07);
+
+    border:1px solid rgba(255,255,255,.12);
+
+    border-radius:10px;
+
+    padding:4px;
+
+}
+
+.newsletter-form input{
+
+    flex:1;
+
+    background:transparent;
+
+    border:none;
+
+    outline:none;
+
+    color:#ffffff;
+
+    padding:10px 12px;
+
+    font-size:13px;
+
+}
+
+.newsletter-form input::placeholder{
+
+    color:#94A3B8;
+
+}
+
+.newsletter-form button{
+
+    border:none;
+
+    background:#14B8A6;
+
+    color:#ffffff;
+
+    border-radius:7px;
+
+    padding:9px 16px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.newsletter-form button:hover{
+
+    background:#0D9488;
+
+}
+
+/* ================= BOTTOM ================= */
+
+.footer-bottom{
+
+    border-top:1px solid rgba(255,255,255,.12);
+
+    padding-top:25px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:20px;
+
+}
+
+.footer-bottom p{
+
+    color:#94A3B8;
+
+    font-size:13px;
+
+    margin:0;
+
+}
+
+.footer-bottom-links{
+
+    display:flex;
+
+    gap:20px;
+
+}
+
+.footer-bottom-links a{
+
+    color:#94A3B8;
+
+    text-decoration:none;
+
+    font-size:13px;
+
+    transition:.3s;
+
+}
+
+.footer-bottom-links a:hover{
+
+    color:#ffffff;
+
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:992px){
+
+    .footer-grid{
+
+        grid-template-columns:1fr 1fr;
+
+    }
+
+}
+
+@media(max-width:576px){
+
+    .main-footer{
+
+        padding-top:50px;
+
+    }
+
+    .footer-grid{
+
+        grid-template-columns:1fr;
+
+        gap:35px;
+
+    }
+
+    .footer-bottom{
+
+        flex-direction:column;
+
+        text-align:center;
+
+    }
+
+    .footer-bottom-links{
+
+        flex-wrap:wrap;
+
+        justify-content:center;
+
+    }
+
+}
+
+</style>
+
+
+<footer class="main-footer">
+
+<div class="footer-container">
+
+    <div class="footer-grid">
+
+        <!-- ================= BRAND ================= -->
+
+        <div class="footer-brand">
+
+            <div class="footer-logo">
+
+                <img src="{{ url_for('static', filename='images/logo.png') }}">
+
+                <h3>
+                    Mind<span>Care</span>
+                </h3>
+
+            </div>
+
+            <p>
+
+                MindCare is a digital mental health support platform
+                designed to help students manage stress, assess their
+                mental wellness, connect with counsellors and access
+                trusted wellness resources.
+
+            </p>
+
+            <div class="social-links">
+
+                <a href="#">
+                    <i class="bi bi-facebook"></i>
+                </a>
+
+                <a href="#">
+                    <i class="bi bi-instagram"></i>
+                </a>
+
+                <a href="#">
+                    <i class="bi bi-linkedin"></i>
+                </a>
+
+                <a href="#">
+                    <i class="bi bi-youtube"></i>
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= MINDCARE ================= -->
+
+        <div class="footer-column">
+
+            <h4>MindCare</h4>
+
+            <ul class="footer-links">
+
+                <li>
+                    <a href="{{ url_for('home') }}">
+                        Home
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('about') }}">
+                        About MindCare
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('assessment') }}">
+                        Mental Assessment
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('resources') }}">
+                        Wellness Resources
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('chatbot') }}">
+                        AI Chat Support
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <!-- ================= SUPPORT ================= -->
+
+        <div class="footer-column">
+
+            <h4>Student Support</h4>
+
+            <ul class="footer-links">
+
+                <li>
+                    <a href="{{ url_for('appointment') }}">
+                        Counselling Appointment
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        Mood Tracker
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        Peer Support
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('resources') }}">
+                        Mental Wellness Guides
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        Help & Support
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <!-- ================= CONTACT ================= -->
+
+        <div class="footer-column">
+
+            <h4>Get in Touch</h4>
+
+            <div class="footer-contact">
+
+                <p>
+
+                    <i class="bi bi-geo-alt-fill"></i>
+
+                    Student Wellness Centre
+
+                </p>
+
+                <p>
+
+                    <i class="bi bi-envelope-fill"></i>
+
+                    support@mindcare.com
+
+                </p>
+
+                <p>
+
+                    <i class="bi bi-telephone-fill"></i>
+
+                    +91 00000 00000
+
+                </p>
+
+            </div>
+
+            <div class="newsletter-box mt-3">
+
+                <p>
+
+                    Stay updated with mental wellness
+                    tips and MindCare updates.
+
+                </p>
+
+                <form class="newsletter-form">
+
+                    <input
+                        type="email"
+                        placeholder="Email address"
+                        required>
+
+                    <button type="submit">
+
+                        Join
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= BOTTOM ================= -->
+
+    <div class="footer-bottom">
+
+        <p>
+
+            © 2026 MindCare. All rights reserved.
+
+        </p>
+
+        <div class="footer-bottom-links">
+
+            <a href="#">
+                Privacy Policy
+            </a>
+
+            <a href="#">
+                Terms of Service
+            </a>
+
+            <a href="#">
+                Accessibility
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+</footer>

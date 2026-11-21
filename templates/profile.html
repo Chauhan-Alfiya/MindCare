@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>My Profile | MindCare</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet">
+
+    <!-- Poppins -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+
+        body {
+            background: #f0f4f8;
+            font-family: "Poppins", sans-serif;
+        }
+
+        .mindcare-header {
+            background: #06232d;
+            color: white;
+        }
+
+        .profile-menu .nav-link {
+            color: #17324d;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .profile-menu .nav-link.active {
+            background: #0e4a5c;
+            color: white;
+        }
+
+        .profile-menu .nav-link:hover {
+            background: #e8f0f3;
+        }
+
+        .profile-menu .nav-link.active:hover {
+            background: #0e4a5c;
+        }
+
+        .profile-icon {
+            width: 70px;
+            height: 70px;
+            background: white;
+            color: #0e4a5c;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            font-weight: 700;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .info-value {
+            color: #17324d;
+            font-weight: 600;
+        }
+
+        .profile-info {
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 8px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container py-4 py-md-5">
+
+    <!-- PAGE TITLE -->
+
+    <div class="mb-4">
+
+        <h2 class="fw-bold mb-1"
+            style="color:#06232d;">
+
+            <i class="bi bi-person-circle me-2"></i>
+            My Profile
+
+        </h2>
+
+        <p class="text-muted mb-0">
+            View and manage your MindCare profile.
+        </p>
+
+    </div>
+
+
+    <!-- ==================================================
+         PROFILE MAIN AREA
+    =================================================== -->
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="row g-0">
+
+
+            <!-- ==========================================
+                 LEFT MENU
+            =========================================== -->
+
+            <div class="col-md-3 border-end">
+
+                <div class="p-3 profile-menu">
+
+                    <div class="nav flex-column nav-pills"
+                         id="profileMenu">
+
+
+                        <!-- PROFILE -->
+
+                        <button
+                            class="nav-link active text-start"
+                            data-bs-toggle="pill"
+                            data-bs-target="#profileView"
+                            type="button">
+
+                            <i class="bi bi-person me-2"></i>
+
+                            Profile
+
+                        </button>
+
+
+                        <!-- PASSWORD -->
+
+                        <button
+                            class="nav-link text-start"
+                            data-bs-toggle="pill"
+                            data-bs-target="#passwordView"
+                            type="button">
+
+                            <i class="bi bi-lock me-2"></i>
+
+                            Password
+
+                        </button>
+
+
+                        <!-- EDIT PROFILE -->
+
+                        <button
+                            class="nav-link text-start"
+                            data-bs-toggle="pill"
+                            data-bs-target="#editView"
+                            type="button">
+
+                            <i class="bi bi-pencil-square me-2"></i>
+
+                            Edit Profile
+
+                        </button>
+
+
+                        <!-- DELETE -->
+
+                        <button
+                            class="nav-link text-start text-danger"
+                            data-bs-toggle="pill"
+                            data-bs-target="#deleteView"
+                            type="button">
+
+                            <i class="bi bi-trash me-2"></i>
+
+                            Delete Account
+
+                        </button>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ==========================================
+                 RIGHT CONTENT
+            =========================================== -->
+
+            <div class="col-md-9">
+
+                <div class="tab-content p-4 p-md-5">
+
+
+                    <!-- =================================================
+                         PROFILE VIEW
+                    ================================================== -->
+
+                    <div
+                        class="tab-pane fade show active"
+                        id="profileView">
+
+
+                        <!-- PROFILE HEADER -->
+
+                        <div class="mindcare-header rounded-3 p-4 mb-4">
+
+                            <div class="d-flex align-items-center gap-3">
+
+                                <div class="profile-icon">
+
+                                    {% set display_name =
+                                        user.get('name')
+                                        or user.get('username')
+                                        or 'User' %}
+
+                                    {{ display_name[0]|upper }}
+
+                                </div>
+
+
+                                <div>
+
+                                    <h3 class="fw-bold mb-2">
+
+                                        {{ display_name }}
+
+                                    </h3>
+
+
+                                    {% set role =
+                                        (user.get('role')
+                                        or 'STUDENT')|upper %}
+
+
+                                    {% if role == 'ADMIN' %}
+
+                                        <span class="badge bg-light text-dark">
+
+                                            <i class="bi bi-shield-check me-1"></i>
+                                            ADMIN
+
+                                        </span>
+
+
+                                    {% elif role == 'COUNSELLOR' %}
+
+                                        <span class="badge bg-light text-dark">
+
+                                            <i class="bi bi-person-heart me-1"></i>
+                                            COUNSELLOR
+
+                                        </span>
+
+
+                                    {% else %}
+
+                                        <span class="badge bg-light text-dark">
+
+                                            <i class="bi bi-person-badge me-1"></i>
+                                            STUDENT
+
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- PROFILE INFORMATION -->
+
+                        <div class="row">
+
+
+                            <!-- EMAIL -->
+
+                            <div class="col-md-6">
+
+                                <div class="profile-info">
+
+                                    <div class="info-label">
+                                        Email Address
+                                    </div>
+
+                                    <div class="info-value">
+
+                                        <i class="bi bi-envelope me-2"
+                                           style="color:#0e4a5c;"></i>
+
+                                        {{ user.get('email') or 'Not Available' }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- USER ID -->
+
+                            <div class="col-md-6">
+
+                                <div class="profile-info">
+
+                                    <div class="info-label">
+                                        User ID
+                                    </div>
+
+                                    <div class="info-value">
+
+                                        <i class="bi bi-fingerprint me-2"
+                                           style="color:#0e4a5c;"></i>
+
+                                        #{{ user.get('user_id')
+                                            or user.get('id')
+                                            or 'N/A' }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- ==============================
+                                 STUDENT
+                            =============================== -->
+
+                            {% if role == 'STUDENT' %}
+
+
+                                <div class="col-md-6">
+
+                                    <div class="profile-info">
+
+                                        <div class="info-label">
+                                            Class
+                                        </div>
+
+                                        <div class="info-value">
+
+                                            <i class="bi bi-mortarboard me-2"
+                                               style="color:#0e4a5c;"></i>
+
+                                            {{ user.get('class')
+                                               or 'Not Available' }}
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <div class="profile-info">
+
+                                        <div class="info-label">
+                                            Stream
+                                        </div>
+
+                                        <div class="info-value">
+
+                                            <i class="bi bi-book me-2"
+                                               style="color:#0e4a5c;"></i>
+
+                                            {{ user.get('stream')
+                                               or 'Not Available' }}
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                            {% endif %}
+
+
+
+                            <!-- ==============================
+                                 COUNSELLOR
+                            =============================== -->
+
+                            {% if role == 'COUNSELLOR' %}
+
+
+                                <div class="col-md-6">
+
+                                    <div class="profile-info">
+
+                                        <div class="info-label">
+                                            Qualification
+                                        </div>
+
+                                        <div class="info-value">
+
+                                            <i class="bi bi-mortarboard me-2"
+                                               style="color:#0e4a5c;"></i>
+
+                                            {{ user.get('qualification')
+                                               or 'Not Available' }}
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <div class="profile-info">
+
+                                        <div class="info-label">
+                                            Specialization
+                                        </div>
+
+                                        <div class="info-value">
+
+                                            <i class="bi bi-heart-pulse me-2"
+                                               style="color:#0e4a5c;"></i>
+
+                                            {{ user.get('specialization')
+                                               or 'Not Available' }}
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <div class="profile-info">
+
+                                        <div class="info-label">
+                                            Experience
+                                        </div>
+
+                                        <div class="info-value">
+
+                                            <i class="bi bi-briefcase me-2"
+                                               style="color:#0e4a5c;"></i>
+
+                                            {% if user.get('experience') %}
+
+                                                {{ user.get('experience') }}
+                                                Years
+
+                                            {% else %}
+
+                                                Not Available
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-12">
+
+                                    <div class="profile-info">
+
+                                        <div class="info-label">
+                                            Description
+                                        </div>
+
+                                        <div class="info-value fw-normal">
+
+                                            <i class="bi bi-card-text me-2"
+                                               style="color:#0e4a5c;"></i>
+
+                                            {{ user.get('description')
+                                               or 'Professional counsellor providing student mental health support.' }}
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                            {% endif %}
+
+
+
+                            <!-- ==============================
+                                 ADMIN
+                            =============================== -->
+
+                            {% if role == 'ADMIN' %}
+
+
+                                <div class="col-md-6">
+
+                                    <div class="profile-info">
+
+                                        <div class="info-label">
+                                            Account Type
+                                        </div>
+
+                                        <div class="info-value">
+
+                                            <i class="bi bi-shield-lock me-2"
+                                               style="color:#0e4a5c;"></i>
+
+                                            System Administrator
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <div class="profile-info">
+
+                                        <div class="info-label">
+                                            Access Level
+                                        </div>
+
+                                        <div class="info-value">
+
+                                            <i class="bi bi-key me-2"
+                                               style="color:#0e4a5c;"></i>
+
+                                            Full Administrative Access
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-12">
+
+                                    <div class="profile-info">
+
+                                        <div class="info-label">
+                                            Responsibilities
+                                        </div>
+
+                                        <div class="info-value fw-normal">
+
+                                            <i class="bi bi-gear me-2"
+                                               style="color:#0e4a5c;"></i>
+
+                                            Manage students, counsellors,
+                                            appointments, resources and
+                                            system reports.
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                            {% endif %}
+
+
+
+                            <!-- JOINED -->
+
+                            <div class="col-md-6">
+
+                                <div class="profile-info">
+
+                                    <div class="info-label">
+                                        Joined On
+                                    </div>
+
+                                    <div class="info-value">
+
+                                        <i class="bi bi-calendar-check me-2"
+                                           style="color:#0e4a5c;"></i>
+
+                                        {{ user.get('created_at')
+                                           or 'Not Available' }}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- STATUS -->
+
+                            <div class="col-md-6">
+
+                                <div class="profile-info">
+
+                                    <div class="info-label">
+                                        Account Status
+                                    </div>
+
+                                    <div class="info-value text-success">
+
+                                        <i class="bi bi-check-circle-fill me-2"></i>
+
+                                        Active Account
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         PASSWORD
+                    ================================================== -->
+
+                    <div
+                        class="tab-pane fade"
+                        id="passwordView">
+
+
+                        <h4 class="fw-bold"
+                            style="color:#06232d;">
+
+                            <i class="bi bi-lock me-2"></i>
+
+                            Change Password
+
+                        </h4>
+
+                        <hr>
+
+
+                        <form method="POST"
+                              action="{{ url_for('profile') }}">
+
+
+                            <div class="mb-3">
+
+                                <label class="form-label fw-semibold">
+                                    Current Password
+                                </label>
+
+                                <input
+                                    type="password"
+                                    name="current_password"
+                                    class="form-control"
+                                    required>
+
+                            </div>
+
+
+                            <div class="mb-3">
+
+                                <label class="form-label fw-semibold">
+                                    New Password
+                                </label>
+
+                                <input
+                                    type="password"
+                                    name="new_password"
+                                    class="form-control"
+                                    required>
+
+                            </div>
+
+
+                            <div class="mb-4">
+
+                                <label class="form-label fw-semibold">
+                                    Confirm New Password
+                                </label>
+
+                                <input
+                                    type="password"
+                                    name="confirm_password"
+                                    class="form-control"
+                                    required>
+
+                            </div>
+
+
+                            <button
+                                type="submit"
+                                name="change_password"
+                                value="1"
+                                class="btn text-white"
+                                style="background:#0e4a5c;">
+
+                                <i class="bi bi-check-lg me-1"></i>
+
+                                Update Password
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         EDIT PROFILE
+                    ================================================== -->
+
+                    <div
+                        class="tab-pane fade"
+                        id="editView">
+
+
+                        <h4 class="fw-bold"
+                            style="color:#06232d;">
+
+                            <i class="bi bi-pencil-square me-2"></i>
+
+                            Edit Profile
+
+                        </h4>
+
+                        <hr>
+
+
+                        <form method="POST"
+                              action="{{ url_for('profile') }}">
+
+
+                            <!-- NAME -->
+
+                            <div class="mb-3">
+
+                                <label class="form-label fw-semibold">
+                                    Name
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="name"
+                                    class="form-control"
+                                    value="{{ user.get('name') or user.get('username') or '' }}"
+                                    required>
+
+                            </div>
+
+
+
+                            <!-- EMAIL -->
+
+                            <div class="mb-3">
+
+                                <label class="form-label fw-semibold">
+                                    Email Address
+                                </label>
+
+                                <input
+                                    type="email"
+                                    name="email"
+                                    class="form-control"
+                                    value="{{ user.get('email') or '' }}"
+                                    required>
+
+                            </div>
+
+
+
+                            <!-- STUDENT -->
+
+                            {% if role == 'STUDENT' %}
+
+
+                                <div class="row">
+
+                                    <div class="col-md-6 mb-3">
+
+                                        <label class="form-label fw-semibold">
+                                            Class
+                                        </label>
+
+                                        <select
+                                            name="class"
+                                            class="form-select">
+
+                                            <option value="11th"
+                                                {% if user.get('class') == '11th' %}
+                                                    selected
+                                                {% endif %}>
+
+                                                11th
+
+                                            </option>
+
+                                            <option value="12th"
+                                                {% if user.get('class') == '12th' %}
+                                                    selected
+                                                {% endif %}>
+
+                                                12th
+
+                                            </option>
+
+                                        </select>
+
+                                    </div>
+
+
+                                    <div class="col-md-6 mb-3">
+
+                                        <label class="form-label fw-semibold">
+                                            Stream
+                                        </label>
+
+                                        <select
+                                            name="stream"
+                                            class="form-select">
+
+                                            <option value="Science"
+                                                {% if user.get('stream') == 'Science' %}
+                                                    selected
+                                                {% endif %}>
+
+                                                Science
+
+                                            </option>
+
+                                            <option value="Commerce"
+                                                {% if user.get('stream') == 'Commerce' %}
+                                                    selected
+                                                {% endif %}>
+
+                                                Commerce
+
+                                            </option>
+
+                                            <option value="Arts"
+                                                {% if user.get('stream') == 'Arts' %}
+                                                    selected
+                                                {% endif %}>
+
+                                                Arts
+
+                                            </option>
+
+                                        </select>
+
+                                    </div>
+
+                                </div>
+
+
+                            {% endif %}
+
+
+
+                            <!-- COUNSELLOR -->
+
+                            {% if role == 'COUNSELLOR' %}
+
+
+                                <div class="row">
+
+                                    <div class="col-md-6 mb-3">
+
+                                        <label class="form-label fw-semibold">
+                                            Qualification
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            name="qualification"
+                                            class="form-control"
+                                            value="{{ user.get('qualification') or '' }}">
+
+                                    </div>
+
+
+                                    <div class="col-md-6 mb-3">
+
+                                        <label class="form-label fw-semibold">
+                                            Specialization
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            name="specialization"
+                                            class="form-control"
+                                            value="{{ user.get('specialization') or '' }}">
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="mb-3">
+
+                                    <label class="form-label fw-semibold">
+                                        Experience
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        name="experience"
+                                        class="form-control"
+                                        value="{{ user.get('experience') or '' }}">
+
+                                </div>
+
+
+                                <div class="mb-3">
+
+                                    <label class="form-label fw-semibold">
+                                        Description
+                                    </label>
+
+                                    <textarea
+                                        name="description"
+                                        rows="4"
+                                        class="form-control">{{ user.get('description') or '' }}</textarea>
+
+                                </div>
+
+
+                            {% endif %}
+
+
+
+                            <button
+                                type="submit"
+                                name="update_profile"
+                                value="1"
+                                class="btn text-white"
+                                style="background:#0e4a5c;">
+
+                                <i class="bi bi-check-lg me-1"></i>
+
+                                Save Changes
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         DELETE ACCOUNT
+                    ================================================== -->
+
+                    <div
+                        class="tab-pane fade"
+                        id="deleteView">
+
+
+                        <h4 class="fw-bold text-danger">
+
+                            <i class="bi bi-trash me-2"></i>
+
+                            Delete Account
+
+                        </h4>
+
+                        <hr>
+
+
+                        <div class="alert alert-warning">
+
+                            <strong>Attention!</strong>
+
+                            <p class="mb-0 mt-2">
+
+                                Deleting your account will deactivate
+                                your MindCare account.
+
+                            </p>
+
+                        </div>
+
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('profile') }}"
+                            onsubmit="return confirm('Are you sure you want to delete your MindCare account?');">
+
+
+                            <button
+                                type="submit"
+                                name="delete_account"
+                                value="1"
+                                class="btn btn-danger">
+
+                                <i class="bi bi-trash me-1"></i>
+
+                                Delete My Account
+
+                            </button>
+
+
+                        </form>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Bootstrap JS -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+
+</body>
+
+</html>

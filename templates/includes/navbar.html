@@ -1,0 +1,132 @@
+<style>
+.portal-navbar {
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 16px 40px;
+}
+
+.brand-text {
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: #0e4a5c;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.nav-links-menu a {
+    color: #334155;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: color .2s ease;
+    padding: 6px 12px;
+}
+
+.nav-links-menu a:hover,
+.nav-links-menu a.active {
+    color: #0e4a5c;
+}
+
+.avatar-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #0e4a5c;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid #ffffff;
+    box-shadow: 0 3px 10px rgba(14,74,92,.2);
+    transition: .2s;
+}
+
+.avatar-circle:hover {
+    transform: scale(1.05);
+    background: #14b8a6;
+}
+.nav-right{
+
+    margin-left:auto;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:28px;
+
+        color: #0e4a5c;
+
+
+}.divider{
+
+    width:1px;
+
+    height:28px;
+
+    background:#d1d5db;
+
+}
+</style>
+
+<nav class="portal-navbar sticky-top">
+    <div class="d-flex justify-content-between align-items-center">
+
+        <!-- Logo -->
+        <div class="brand-text">
+            <img src="{{ url_for('static', filename='images/logo.png') }}"
+                 width="38"
+                 alt="MindCare Logo">
+            MindCare
+        </div>
+
+        <!-- Avatar -->
+         <div class="nav-right">
+
+<a 
+{% if session.get('role') == 'ADMIN' %}
+
+href="{{ url_for('admin_dashboard') }}"
+
+{% elif session.get('role') == 'COUNSELLOR' %}
+
+href="{{ url_for('counsellor_dashboard') }}"
+
+{% elif session.get('role') == 'STUDENT' %}
+
+href="{{ url_for('student_dashboard') }}"
+
+{% else %}
+
+href="{{ url_for('home') }}"
+
+{% endif %}
+
+class="nav-link home-link">
+
+<i class="bi bi-house-fill me-1"></i>
+
+Home
+
+</a>
+
+
+<div class="divider"></div>
+
+
+
+</div>
+        <div class="avatar-circle"
+             data-bs-toggle="offcanvas"
+             data-bs-target="#accountSidebar"
+             aria-controls="accountSidebar">
+            {{ session['username'][0] | upper if session.get('username') else 'D' }}
+        </div>
+
+    </div>
+</nav>
