@@ -384,6 +384,26 @@
                 padding: 12px 15px;
             }
         }
+        .complete-chat-btn {
+    background: transparent;
+    color: #ffffff;
+    border: 1px solid #2dd4bf;
+    border-radius: 25px;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    transition: .3s;
+}
+
+.complete-chat-btn:hover {
+    background: #14b8a6;
+    color: white;
+}
+
+.complete-chat-btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
 
     </style>
 
@@ -445,10 +465,23 @@
 
                 </div>
 
-                <div>
-                    <i class="bi bi-shield-check fs-4"
-                        title="Supportive space"></i>
-                </div>
+                <div class="d-flex align-items-center gap-3">
+
+    <button
+        type="button"
+        class="complete-chat-btn"
+        id="completeChatBtn"
+        onclick="completeChat()">
+
+        <i class="bi bi-check-circle me-1"></i>
+        Complete Chat
+
+    </button>
+
+    <i class="bi bi-shield-check fs-4"
+        title="Supportive space"></i>
+
+</div>
 
             </div>
 
@@ -589,7 +622,7 @@
                     </div>
 
                 </form>
-
+                
                 <p class="chat-note">
                     <i class="bi bi-shield-lock me-1"></i>
                     Your well-being matters. AI support is not a
@@ -799,7 +832,70 @@
         // Scroll to latest message on page load
 
         chatBody.scrollTop = chatBody.scrollHeight;
+        // Complete Current Chat
 
+async function completeChat() {
+
+    const confirmComplete = confirm(
+        "Are you sure you want to complete this conversation?"
+    );
+
+    if (!confirmComplete) {
+        return;
+    }
+
+    const completeBtn = document.getElementById(
+        "completeChatBtn"
+    );
+
+    completeBtn.disabled = true;
+
+    completeBtn.innerHTML =
+        '<span class="spinner-border spinner-border-sm"></span> Completing...';
+
+    try {
+
+        const response = await fetch(
+            "{{ url_for('complete_chat') }}",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.error || "Unable to complete chat."
+            );
+        }
+
+        alert(
+            "Your previous chat is completed!\nA new chat has been started."
+        );
+
+        // Reload chatbot with new session
+        window.location.reload();
+
+    }
+
+    catch (error) {
+
+        alert(error.message);
+
+        completeBtn.disabled = false;
+
+        completeBtn.innerHTML =
+            '<i class="bi bi-check-circle me-1"></i> Complete Chat';
+
+        console.error("Complete Chat Error:", error);
+
+    }
+
+}
     </script>
 
 </body>

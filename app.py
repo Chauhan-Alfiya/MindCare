@@ -69,99 +69,76 @@ def about():
 @app.route("/chatbot")
 def chatbot():
 
-    # ===========================
-    # LOGIN CHECK
-    # ===========================
     if "user_id" not in session:
         return redirect(url_for("login"))
 
-
-    # ===========================
-    # STUDENT ONLY
-    # ===========================
     if session.get("role") != "STUDENT":
         return redirect(url_for("dashboard_redirect"))
-
 
     db = None
     cursor = None
 
-
     try:
-
-        # ===========================
-        # DATABASE CONNECTION
-        # ===========================
         db = get_db_connection()
+        cursor = db.cursor(dictionary=True)
 
-        cursor = db.cursor(
-            dictionary=True
-        )
+        user_id = session["user_id"]
 
-
-        # ===========================
-        # GET CHAT HISTORY
-        # ===========================
+        # Find existing ACTIVE session
         cursor.execute("""
-            SELECT
-                message,
-                bot_reply,
-                created_at
+            SELECT session_id
+            FROM chat_sessions
+            WHERE user_id = %s
+            AND status = 'Active'
+            ORDER BY session_id DESC
+            LIMIT 1
+        """, (user_id,))
+
+        active_chat = cursor.fetchone()
+
+        # Create only if no active session exists
+        if active_chat:
+            chat_session_id = active_chat["session_id"]
+
+        else:
+            cursor.execute("""
+                INSERT INTO chat_sessions (user_id)
+                VALUES (%s)
+            """, (user_id,))
+
+            chat_session_id = cursor.lastrowid
+            db.commit()
+
+        # Load previous messages from SAME session
+        cursor.execute("""
+            SELECT message, bot_reply, created_at
             FROM chat_support
             WHERE user_id = %s
-            ORDER BY chat_id DESC
+            AND session_id = %s
+            ORDER BY chat_id ASC
             LIMIT 30
-        """, (
-            session["user_id"],
-        ))
+        """, (user_id, chat_session_id))
 
-
-        # Get records
         chat_history = cursor.fetchall()
 
-
-        # Reverse because newest records
-        # are currently coming first
-        chat_history.reverse()
-
-
-        # ===========================
-        # OPEN CHATBOT PAGE
-        # ===========================
         return render_template(
             "chatbot.html",
             chat_history=chat_history
         )
 
-
     except Exception as err:
 
-        print(
-            "Chat History Error:",
-            repr(err)
-        )
+        if db:
+            db.rollback()
 
+        print("Chat Error:", repr(err))
 
-        # If database error happens,
-        # still open chatbot page
-        return render_template(
-            "chatbot.html",
-            chat_history=[]
-        )
-
+        return "Unable to load chat."
 
     finally:
-
-        # ===========================
-        # CLOSE CURSOR
-        # ===========================
         if cursor:
             cursor.close()
 
-
-        # ===========================
-        # CLOSE DATABASE
-        # ===========================
         if db:
             db.close()
 
@@ -169,102 +146,77 @@ def chatbot():
 @app.route("/chatbot/send", methods=["POST"])
 def chatbot_send():
 
-    # ===========================
-    # LOGIN CHECK
-    # ===========================
     if "user_id" not in session:
-        return jsonify({
-            "error": "Please login first."
-        }), 401
+        return jsonify({"error": "Please login first."}), 401
 
-
-    # ===========================
-    # STUDENT ONLY
-    # ===========================
     if session.get("role") != "STUDENT":
-        return jsonify({
-            "error": "Access denied."
-        }), 403
-
+        return jsonify({"error": "Access denied."}), 403
 
     user_id = session["user_id"]
 
-
-    # ===========================
-    # GET MESSAGE
-    # ===========================
     data = request.get_json(silent=True) or {}
+    message = str(data.get("message", "")).strip()
 
-    message = str(
-        data.get("message", "")
-    ).strip()
-
-
-    # ===========================
-    # VALIDATION
-    # ===========================
     if not message:
-        return jsonify({
-            "error": "Please enter a message."
-        }), 400
-
+        return jsonify({"error": "Please enter a message."}), 400
 
     if len(message) > 2000:
-        return jsonify({
-            "error": "Message is too long."
-        }), 400
+        return jsonify({"error": "Message is too long."}), 400
 
-
-    # ===========================
-    # CHECK GROQ API KEY
-    # ===========================
     api_key = os.getenv("GROQ_API_KEY")
 
     if not api_key:
-
-        print("AI CHAT ERROR: GROQ_API_KEY is missing.")
-
         return jsonify({
-            "error": "Groq API key is missing. Please check your .env file."
+            "error": "Groq API key is missing."
         }), 500
-
 
     db = None
     cursor = None
 
-
     try:
 
-        # ===========================
-        # DATABASE CONNECTION
-        # ===========================
         db = get_db_connection()
+        cursor = db.cursor(dictionary=True)
 
-        cursor = db.cursor(
-            dictionary=True
-        )
+        # 1. GET ACTIVE CHAT SESSION
+        cursor.execute("""
+            SELECT session_id
+            FROM chat_sessions
+            WHERE user_id = %s
+            AND status = 'Active'
+            ORDER BY session_id DESC
+            LIMIT 1
+        """, (user_id,))
 
+        active_chat = cursor.fetchone()
 
-        # ===========================
-        # GET PREVIOUS CHAT HISTORY
-        # ===========================
+        if not active_chat:
+
+            cursor.execute("""
+                INSERT INTO chat_sessions (user_id)
+                VALUES (%s)
+            """, (user_id,))
+
+            chat_session_id = cursor.lastrowid
+            db.commit()
+
+        else:
+            chat_session_id = active_chat["session_id"]
+
+        # 2. GET SAME SESSION HISTORY
         cursor.execute("""
             SELECT message, bot_reply
             FROM chat_support
             WHERE user_id = %s
+            AND session_id = %s
             ORDER BY chat_id DESC
             LIMIT 8
-        """, (user_id,))
-
+        """, (user_id, chat_session_id))
 
         history = cursor.fetchall()
-
         history.reverse()
 
-
-        # ===========================
-        # SYSTEM INSTRUCTIONS
-        # ===========================
+        # 3. SYSTEM INSTRUCTIONS
         conversation = [
             {
                 "role": "system",
@@ -289,18 +241,15 @@ Do not prescribe medicines.
 Do not claim to be a doctor or human counsellor.
 
 If a student mentions suicide, self-harm or immediate danger,
-encourage them to immediately contact a trusted adult, parent,
-teacher, school counsellor or local emergency services.
+encourage them to immediately contact a trusted adult,
+parent, teacher, school counsellor or local emergency services.
 
 Keep replies reasonably short and supportive.
 """
             }
         ]
 
-
-        # ===========================
-        # ADD OLD CHAT HISTORY
-        # ===========================
+        # 4. ADD OLD MESSAGES
         for chat in history:
 
             conversation.append({
@@ -308,28 +257,18 @@ Keep replies reasonably short and supportive.
                 "content": chat["message"]
             })
 
-
             conversation.append({
                 "role": "assistant",
-                "content": chat["bot_reply"]
+                "content": chat["bot_reply"] or ""
             })
 
-
-        # ===========================
-        # ADD CURRENT MESSAGE
-        # ===========================
+        # 5. ADD CURRENT MESSAGE
         conversation.append({
             "role": "user",
             "content": message
         })
 
-
-        # ===========================
-        # GROQ AI RESPONSE
-        # ===========================
-        print("AI CHAT: Sending message to Groq...")
-
-
+        # 6. GROQ RESPONSE
         response = client.chat.completions.create(
 
             model=os.getenv(
@@ -338,79 +277,144 @@ Keep replies reasonably short and supportive.
             ),
 
             messages=conversation,
-
             temperature=0.7,
-
             max_completion_tokens=500
         )
 
+        bot_reply = response.choices[0].message.content
 
-        # ===========================
-        # GET AI REPLY
-        # ===========================
-        bot_reply = response.choices[0].message.content.strip()
+        if not bot_reply or not bot_reply.strip():
+            raise ValueError("AI returned an empty response.")
 
+        bot_reply = bot_reply.strip()
 
-        if not bot_reply:
-            raise ValueError(
-                "AI returned an empty response."
-            )
-
-
-        # ===========================
-        # SAVE CHAT IN DATABASE
-        # ===========================
+        # 7. SAVE MESSAGE IN CURRENT SESSION
         cursor.execute("""
             INSERT INTO chat_support
-            (user_id, message, bot_reply)
-            VALUES (%s, %s, %s)
+            (user_id, session_id, message, bot_reply)
+            VALUES (%s, %s, %s, %s)
         """, (
             user_id,
+            chat_session_id,
             message,
             bot_reply
         ))
 
-
         db.commit()
-
-
-        print("AI CHAT SUCCESS!")
-
 
         return jsonify({
             "reply": bot_reply
         })
-
 
     except Exception as err:
 
         if db:
             db.rollback()
 
-
-        print("\n========== GROQ AI CHAT ERROR ==========")
-
-        print("ERROR:", repr(err))
-
+        print("GROQ CHAT ERROR:", repr(err))
         traceback.print_exc()
 
-        print("=========================================\n")
-
-
         return jsonify({
-            "error": str(err)
+            "error": "Unable to generate a reply right now. Please try again."
         }), 500
-
 
     finally:
 
         if cursor:
             cursor.close()
 
-
         if db:
             db.close()
 
+@app.route("/chatbot/complete", methods=["POST"])
+def complete_chat():
+
+    if "user_id" not in session:
+        return jsonify({
+            "error": "Please login first."
+        }), 401
+
+    if session.get("role") != "STUDENT":
+        return jsonify({
+            "error": "Access denied."
+        }), 403
+
+    db = None
+    cursor = None
+
+    try:
+
+        db = get_db_connection()
+        cursor = db.cursor(dictionary=True)
+
+        user_id = session["user_id"]
+
+        # Find current active chat
+        cursor.execute("""
+            SELECT session_id
+            FROM chat_sessions
+            WHERE user_id = %s
+            AND status = 'Active'
+            ORDER BY session_id DESC
+            LIMIT 1
+            FOR UPDATE
+        """, (user_id,))
+
+        active_chat = cursor.fetchone()
+
+        if not active_chat:
+            return jsonify({
+                "error": "No active chat found."
+            }), 404
+
+        old_session_id = active_chat["session_id"]
+
+        # Complete current chat
+        cursor.execute("""
+            UPDATE chat_sessions
+            SET status = 'Completed',
+                completed_at = NOW()
+            WHERE session_id = %s
+            AND user_id = %s
+        """, (old_session_id, user_id))
+
+        # Create new chat session
+        cursor.execute("""
+            INSERT INTO chat_sessions (user_id)
+            VALUES (%s)
+        """, (user_id,))
+
+        new_session_id = cursor.lastrowid
+
+        db.commit()
+
+        print("CHAT COMPLETED:", old_session_id)
+        print("NEW CHAT CREATED:", new_session_id)
+
+        return jsonify({
+            "success": True,
+            "message": "Your previous chat is completed. New chat started!",
+            "new_session_id": new_session_id
+        })
+
+    except Exception as err:
+
+        if db:
+            db.rollback()
+
+        print("Complete Chat Error:", repr(err))
+
+        return jsonify({
+            "error": "Unable to complete chat right now."
+        }), 500
+
+    finally:
+
+        if cursor:
+            cursor.close()
+
+        if db:
+            db.close()
 
 # ===========================
 # COMMON DASHBOARD REDIRECT
@@ -4059,7 +4063,7 @@ def ai_assessment():
 
             model=os.getenv(
                 "GROQ_MODEL",
-                "llama-3.3-70b-versatile"
+                "openai/gpt-oss-120b"
             ),
 
             messages=[

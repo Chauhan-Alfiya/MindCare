@@ -224,5 +224,44 @@ DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_unicode_ci;
 
 
+-- 1. Create chat sessions table
+
+CREATE TABLE chat_sessions (
+    session_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+
+    status ENUM('Active', 'Completed')
+    DEFAULT 'Active',
+
+    started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    completed_at DATETIME DEFAULT NULL,
+
+    FOREIGN KEY (user_id)
+    REFERENCES users(user_id)
+    ON DELETE CASCADE
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- 2. Add session_id to existing chat_support table
+
+ALTER TABLE chat_support
+ADD COLUMN session_id INT NULL AFTER user_id;
+
+
+-- 3. Add index
+
+ALTER TABLE chat_support
+ADD INDEX idx_chat_session (session_id);
+
+
+-- 4. Add foreign key
+
+ALTER TABLE chat_support
+ADD CONSTRAINT fk_chat_session
+FOREIGN KEY (session_id)
+REFERENCES chat_sessions(session_id)
+ON DELETE CASCADE;
+
 
 COMMIT;
